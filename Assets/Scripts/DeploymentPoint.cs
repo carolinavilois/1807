@@ -6,12 +6,12 @@ public class DeploymentPoint : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Camera cam = FindFirstObjectByType<Camera>();
+            Camera cam = FindObjectOfType<Camera>();
             if (cam == null) return;
             Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             if (GetComponent<Collider2D>() != null && GetComponent<Collider2D>().OverlapPoint(mousePos))
             {
-                FindFirstObjectByType<UnitSelectionUI>().Show(transform);
+                FindObjectOfType<UnitSelectionUI>().Show(transform);
             }
         }
     }

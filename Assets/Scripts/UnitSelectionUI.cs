@@ -21,7 +21,7 @@ public class UnitSelectionUI : MonoBehaviour
     void Start()
     {
         canvas = GetComponentInParent<Canvas>();
-        cam = FindFirstObjectByType<Camera>();
+        cam = FindObjectOfType<Camera>();
         if (soldierButton != null)
             soldierButton.onClick.AddListener(DeploySoldier);
         if (sharpshooterButton != null)
