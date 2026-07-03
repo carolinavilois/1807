@@ -105,6 +105,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd662468579ce1f458a79eca421a6654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Sharpshooter
-  range: 7
+  range: 6
   fireRate: 2
   projectilePrefab: {fileID: 1850364650732255031, guid: 1525569dd4ffe184d96aa1b2a5c85b7e, type: 3}

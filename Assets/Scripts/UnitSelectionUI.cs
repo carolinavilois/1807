@@ -15,9 +15,13 @@ public class UnitSelectionUI : MonoBehaviour
     public UnityEngine.UI.Button cannonButton;
 
     Transform selectedPoint;
+    Camera cam;
+    Canvas canvas;
 
     void Start()
     {
+        canvas = GetComponentInParent<Canvas>();
+        cam = FindFirstObjectByType<Camera>();
         if (soldierButton != null)
             soldierButton.onClick.AddListener(DeploySoldier);
         if (sharpshooterButton != null)
@@ -43,7 +47,7 @@ public class UnitSelectionUI : MonoBehaviour
         {
             RectTransform panelRect = selectionPanel.GetComponent<RectTransform>();
             Vector2 mousePos = Input.mousePosition;
-            if (!RectTransformUtility.RectangleContainsScreenPoint(panelRect, mousePos, null))
+            if (!RectTransformUtility.RectangleContainsScreenPoint(panelRect, mousePos, cam))
             {
                 selectionPanel.SetActive(false);
             }
@@ -54,8 +58,12 @@ public class UnitSelectionUI : MonoBehaviour
     {
         selectedPoint = point;
         selectionPanel.SetActive(true);
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(point.position);
-        selectionPanel.transform.position = screenPos + new Vector3(50, 0, 0);
+        Vector2 screenPos = cam.WorldToScreenPoint(point.position);
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        RectTransform panelRect = selectionPanel.GetComponent<RectTransform>();
+        Vector2 anchoredPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, cam, out anchoredPos);
+        panelRect.anchoredPosition = anchoredPos + new Vector2(100, 0);
     }
 
     void DeploySoldier()
