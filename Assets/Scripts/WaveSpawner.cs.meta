@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 76f8517cdcd5ee141a14370baa86bd49
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - enemy1Prefab: {fileID: 8383023262139323187, guid: 3566b24a1cd1f5c49b06c7dff1aea5b5, type: 3}
+  - enemy2Prefab: {fileID: 8383023262139323187, guid: 571ee5d90c8ddd749a07167dae957bc3, type: 3}
+  - enemy3Prefab: {fileID: 8383023262139323187, guid: 9706c5fe2438d3545a05604ab210dece, type: 3}
+  - pathA: {instanceID: 0}
+  - pathB: {instanceID: 0}
+  - pathC: {instanceID: 0}
+  - livesText: {instanceID: 0}
+  - waveText: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
