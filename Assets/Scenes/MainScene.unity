@@ -10492,86 +10492,76 @@ MonoBehaviour:
   pathB: {fileID: 1516726017}
   pathC: {fileID: 1625594086}
   waves:
-  - enemyCount: 5
+  - pathACount: 5
+    pathBCount: 0
+    pathCCount: 0
     spawnDelay: 1
     enemy1Weight: 100
     enemy2Weight: 0
     enemy3Weight: 0
-    usePathA: 1
-    usePathB: 0
-    usePathC: 0
-  - enemyCount: 7
+  - pathACount: 4
+    pathBCount: 2
+    pathCCount: 0
     spawnDelay: 1
     enemy1Weight: 80
     enemy2Weight: 20
     enemy3Weight: 0
-    usePathA: 1
-    usePathB: 1
-    usePathC: 0
-  - enemyCount: 8
+  - pathACount: 4
+    pathBCount: 3
+    pathCCount: 0
     spawnDelay: 1
     enemy1Weight: 60
     enemy2Weight: 30
     enemy3Weight: 10
-    usePathA: 1
-    usePathB: 1
-    usePathC: 0
-  - enemyCount: 10
+  - pathACount: 3
+    pathBCount: 3
+    pathCCount: 2
     spawnDelay: 1
     enemy1Weight: 50
     enemy2Weight: 40
     enemy3Weight: 20
-    usePathA: 1
-    usePathB: 1
-    usePathC: 0
-  - enemyCount: 11
+  - pathACount: 3
+    pathBCount: 3
+    pathCCount: 2
     spawnDelay: 1
     enemy1Weight: 50
     enemy2Weight: 35
     enemy3Weight: 15
-    usePathA: 1
-    usePathB: 1
-    usePathC: 1
-  - enemyCount: 12
+  - pathACount: 4
+    pathBCount: 4
+    pathCCount: 3
     spawnDelay: 1
     enemy1Weight: 40
     enemy2Weight: 35
     enemy3Weight: 25
-    usePathA: 1
-    usePathB: 1
-    usePathC: 1
-  - enemyCount: 14
+  - pathACount: 4
+    pathBCount: 4
+    pathCCount: 4
     spawnDelay: 1
     enemy1Weight: 30
     enemy2Weight: 40
     enemy3Weight: 30
-    usePathA: 1
-    usePathB: 1
-    usePathC: 1
-  - enemyCount: 14
+  - pathACount: 5
+    pathBCount: 5
+    pathCCount: 4
     spawnDelay: 1
     enemy1Weight: 20
     enemy2Weight: 40
     enemy3Weight: 50
-    usePathA: 1
-    usePathB: 1
-    usePathC: 1
-  - enemyCount: 15
+  - pathACount: 5
+    pathBCount: 5
+    pathCCount: 5
     spawnDelay: 1
     enemy1Weight: 10
     enemy2Weight: 40
     enemy3Weight: 50
-    usePathA: 1
-    usePathB: 1
-    usePathC: 1
-  - enemyCount: 17
+  - pathACount: 6
+    pathBCount: 6
+    pathCCount: 6
     spawnDelay: 1
     enemy1Weight: 10
     enemy2Weight: 30
     enemy3Weight: 60
-    usePathA: 1
-    usePathB: 1
-    usePathC: 1
   maxLives: 10
   livesText: {fileID: 69420}
   waveText: {fileID: 1796790725}
@@ -11255,7 +11245,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 388.3, y: -9.9}
+  m_AnchoredPosition: {x: 388.3, y: -9.899994}
   m_SizeDelta: {x: 353.62, y: 43.08}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1907025380
@@ -11607,7 +11597,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -11771,7 +11761,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -11831,7 +11821,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12064,7 +12054,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12143,7 +12133,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12288,7 +12278,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12413,7 +12403,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12523,7 +12513,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12648,7 +12638,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12720,7 +12710,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12780,7 +12770,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -12977,7 +12967,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -13037,7 +13027,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -13097,7 +13087,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -13540,7 +13530,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}
@@ -13676,7 +13666,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5377358, g: 0.31706122, b: 0.31706122, a: 1}

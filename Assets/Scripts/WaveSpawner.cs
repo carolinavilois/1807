@@ -9,14 +9,13 @@ public class WaveSpawner : MonoBehaviour
     [System.Serializable]
     public class WaveConfig
     {
-        public int enemyCount = 5;            // Cu�ntos enemigos spawnear
+        public int pathACount = 3;            // Cu�ntos enemigos por Path A
+        public int pathBCount = 0;            // Cu�ntos enemigos por Path B
+        public int pathCCount = 0;            // Cu�ntos enemigos por Path C
         public float spawnDelay = 1f;         // Segundos entre cada enemigo
-        [Range(0, 100)] public int enemy1Weight = 100;   // % de probabilidad de Enemy1
+        [Range(0, 100)] public int enemy1Weight = 100;
         [Range(0, 100)] public int enemy2Weight = 0;
         [Range(0, 100)] public int enemy3Weight = 0;
-        public bool usePathA = true;          // Caminos disponibles en esta oleada
-        public bool usePathB = false;
-        public bool usePathC = false;
     }
 
     // Referencias desde el Inspector
@@ -62,24 +61,31 @@ public class WaveSpawner : MonoBehaviour
         WaveConfig config = waves[waveIndex];
         waveText.text = "Oleada " + (waveIndex + 1) + "/10";
 
-        // Spawnea enemigos uno por uno con una pausa entre cada uno
-        for (int i = 0; i < config.enemyCount; i++)
+        // Spawnea enemigos por Path A
+        for (int i = 0; i < config.pathACount; i++)
         {
-            WaypointPath path = ChoosePath(config);                   // Elige el camino
-            GameObject prefab = ChooseEnemyType(config, path);        // Elige el tipo de enemigo
-            if (prefab != null && path != null)
-            {
-                GameObject enemy = Instantiate(prefab, path.GetWaypoint(0).position, Quaternion.identity);
-                enemy.GetComponent<EnemyMovement>().SetPath(path);
-                enemiesAlive++;
-            }
+            SpawnEnemy(pathA, config);
+            yield return new WaitForSeconds(config.spawnDelay);
+        }
+
+        // Spawnea enemigos por Path B
+        for (int i = 0; i < config.pathBCount; i++)
+        {
+            SpawnEnemy(pathB, config);
+            yield return new WaitForSeconds(config.spawnDelay);
+        }
+
+        // Spawnea enemigos por Path C
+        for (int i = 0; i < config.pathCCount; i++)
+        {
+            SpawnEnemy(pathC, config);
             yield return new WaitForSeconds(config.spawnDelay);
         }
 
         // Marca los caminos que ya aparecieron (para dificultad progresiva)
-        if (config.usePathA) pathAWasUsed = true;
-        if (config.usePathB) pathBWasUsed = true;
-        if (config.usePathC) pathCWasUsed = true;
+        if (config.pathACount > 0) pathAWasUsed = true;
+        if (config.pathBCount > 0) pathBWasUsed = true;
+        if (config.pathCCount > 0) pathCWasUsed = true;
 
         // Espera a que todos los enemigos mueran o lleguen a la base
         yield return new WaitUntil(() => enemiesAlive == 0);
@@ -114,17 +120,15 @@ public class WaveSpawner : MonoBehaviour
         return enemy3Prefab;
     }
 
-    // Elige un camino al azar entre los activos en esta oleada
-    WaypointPath ChoosePath(WaveConfig config)
+    // Crea un enemigo en el camino indicado con el tipo de enemigo correspondiente
+    void SpawnEnemy(WaypointPath path, WaveConfig config)
     {
-        List<WaypointPath> activePaths = new List<WaypointPath>();
-        if (config.usePathA) activePaths.Add(pathA);
-        if (config.usePathB) activePaths.Add(pathB);
-        if (config.usePathC) activePaths.Add(pathC);
-
-        if (activePaths.Count == 0) return null;
-
-        return activePaths[Random.Range(0, activePaths.Count)];
+        if (path == null) return;
+        GameObject prefab = ChooseEnemyType(config, path);
+        if (prefab == null) return;
+        GameObject enemy = Instantiate(prefab, path.GetWaypoint(0).position, Quaternion.identity);
+        enemy.GetComponent<EnemyMovement>().SetPath(path);
+        enemiesAlive++;
     }
 
     // Cuando un enemigo llega a la base: resta vida y verifica Game Over
