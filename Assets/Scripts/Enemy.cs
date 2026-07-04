@@ -5,6 +5,7 @@ public class Enemy : MonoBehaviour
 {
     public int maxHealth = 1;           // Vida máxima del enemigo aunque no se cambia acá, esto es default, se cambia en unity
     public int patriotismReward = 5;    // Patriotismo que da al morir
+    public int enemyTypeIndex;          // 0=E1, 1=E2, 2=E3
 
     int currentHealth;                  // Vida actual
     Image healthBarFill;                // Referencia al fill de la barra de vida
@@ -75,7 +76,7 @@ public class Enemy : MonoBehaviour
         if (currentHealth <= 0)
         {
             PatriotismManager.Instance.AddKillReward(patriotismReward);
-            FindAnyObjectByType<WaveSpawner>().EnemyDied();
+            FindAnyObjectByType<WaveSpawner>().EnemyDied(enemyTypeIndex);
             Destroy(gameObject);
         }
     }

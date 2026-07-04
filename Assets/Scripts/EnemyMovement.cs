@@ -31,7 +31,8 @@ public class EnemyMovement : MonoBehaviour
                 // Si lleg� al �ltimo, avisar al WaveSpawner y destruirse
                 if (currentWaypointIndex >= waypointPath.GetPathLength())
                 {
-                    FindAnyObjectByType<WaveSpawner>().EnemyReachedBase();
+                    int typeIndex = GetComponent<Enemy>().enemyTypeIndex;
+                    FindAnyObjectByType<WaveSpawner>().EnemyReachedBase(typeIndex);
                     Destroy(gameObject);
                 }
             }

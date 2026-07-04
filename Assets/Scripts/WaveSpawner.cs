@@ -29,9 +29,13 @@ public class WaveSpawner : MonoBehaviour
     public int maxLives = 10;
     public UnityEngine.UI.Text livesText;
     public UnityEngine.UI.Text waveText;
+    public ProcerDialog procerDialog;
+    public UnityEngine.UI.Text waveHUDText;
+    string[] procerNames = { "Nombre 1", "Nombre 2", "Nombre 3", "Nombre 4" };
 
     int currentWave = 0;         // �ndice de la oleada actual
     int enemiesAlive = 0;        // Enemigos que siguen vivos en esta oleada
+    int[] enemiesByType = new int[3];  // 0=E1, 1=E2, 2=E3
     int currentLives;            // Vidas restantes del jugador
 
     // Control de dificultad progresiva: si un camino se usa por primera vez, solo enemigos b�sicos
@@ -44,12 +48,19 @@ public class WaveSpawner : MonoBehaviour
         waveText.text = "Oleada 1/10";
         currentLives = maxLives;
         livesText.text = "Vidas: " + currentLives;
+
+        if (procerDialog != null)
+        {
+            WaveConfig first = waves[0];
+            procerDialog.Show(BuildProcerMessage(first), GetProcerName(0));
+        }
     }
 
     void Update()
     {
-        // Espacio inicia la oleada si no hay enemigos vivos y todav�a quedan oleadas
-        if (Input.GetKeyDown(KeyCode.Space) && currentWave < waves.Length && enemiesAlive == 0)
+        // Espacio inicia la oleada solo si no hay di�logo abierto
+        if (Input.GetKeyDown(KeyCode.Space) && currentWave < waves.Length && enemiesAlive == 0
+            && (procerDialog == null || !procerDialog.IsOpen()))
         {
             StartCoroutine(SpawnWave(currentWave));
             currentWave++;
@@ -60,6 +71,7 @@ public class WaveSpawner : MonoBehaviour
     {
         WaveConfig config = waves[waveIndex];
         waveText.text = "Oleada " + (waveIndex + 1) + "/10";
+        System.Array.Clear(enemiesByType, 0, enemiesByType.Length);
 
         // Spawnea enemigos por Path A
         for (int i = 0; i < config.pathACount; i++)
@@ -89,7 +101,7 @@ public class WaveSpawner : MonoBehaviour
 
         // Espera a que todos los enemigos mueran o lleguen a la base
         yield return new WaitUntil(() => enemiesAlive == 0);
-        waveText.text = "Oleada " + (waveIndex + 1) + " completada";
+
         if (currentWave >= waves.Length)
         {
             yield return new WaitForSeconds(1.5f);
@@ -97,6 +109,14 @@ public class WaveSpawner : MonoBehaviour
         }
         else
         {
+            // Muestra el di�logo del pr�cer con info de la pr�xima oleada
+            if (procerDialog != null)
+            {
+                WaveConfig next = waves[currentWave];
+                string procerName = GetProcerName(currentWave);
+                procerDialog.Show(BuildProcerMessage(next), procerName);
+                yield return new WaitUntil(() => !procerDialog.IsOpen());
+            }
             waveText.text = "Oleada " + (currentWave + 1) + "/10";
         }
     }
@@ -120,6 +140,26 @@ public class WaveSpawner : MonoBehaviour
         return enemy3Prefab;
     }
 
+    // Genera el mensaje del pr�cer seg�n los caminos activos en la pr�xima oleada
+    string BuildProcerMessage(WaveConfig config)
+    {
+        int total = config.pathACount + config.pathBCount + config.pathCCount;
+        List<string> pathNames = new List<string>();
+        if (config.pathACount > 0) pathNames.Add("el Camino C�ntrico");
+        if (config.pathBCount > 0) pathNames.Add("el Camino Inferior");
+        if (config.pathCCount > 0) pathNames.Add("el Camino Superior");
+
+        string pathsStr;
+        if (pathNames.Count == 1) pathsStr = pathNames[0];
+        else if (pathNames.Count == 2) pathsStr = pathNames[0] + " y " + pathNames[1];
+        else pathsStr = pathNames[0] + ", " + pathNames[1] + " y " + pathNames[2];
+
+        string enemies = total == 1 ? "1 ingl�s" : total + " ingleses";
+        string verbo = total == 1 ? "avanza" : "avanzan";
+
+        return "�Alerta, Liniers! " + enemies + " " + verbo + " por " + pathsStr + ". �Preparad vuestras defensas!";
+    }
+
     // Crea un enemigo en el camino indicado con el tipo de enemigo correspondiente
     void SpawnEnemy(WaypointPath path, WaveConfig config)
     {
@@ -127,16 +167,22 @@ public class WaveSpawner : MonoBehaviour
         GameObject prefab = ChooseEnemyType(config, path);
         if (prefab == null) return;
         GameObject enemy = Instantiate(prefab, path.GetWaypoint(0).position, Quaternion.identity);
+        Enemy enemyScript = enemy.GetComponent<Enemy>();
+        enemyScript.enemyTypeIndex = prefab == enemy2Prefab ? 1 : prefab == enemy3Prefab ? 2 : 0;
+        enemiesByType[enemyScript.enemyTypeIndex]++;
         enemy.GetComponent<EnemyMovement>().SetPath(path);
         enemiesAlive++;
+        UpdateWaveHUD();
     }
 
     // Cuando un enemigo llega a la base: resta vida y verifica Game Over
-    public void EnemyReachedBase()
+    public void EnemyReachedBase(int typeIndex)
     {
         enemiesAlive--;
+        enemiesByType[typeIndex]--;
         currentLives--;
         livesText.text = "Vidas: " + currentLives;
+        UpdateWaveHUD();
         if (currentLives <= 0)
             GameOver();
     }
@@ -146,7 +192,34 @@ public class WaveSpawner : MonoBehaviour
         SceneManager.LoadScene("DefeatScene");
     }
 
-    public void EnemyDied() => enemiesAlive--;   // Un enemigo muri� antes de llegar a la base
+    public void EnemyDied(int typeIndex)
+    {
+        enemiesAlive--;
+        enemiesByType[typeIndex]--;
+        UpdateWaveHUD();
+    }
 
     public bool HasActiveEnemies() => enemiesAlive > 0;  // �Hay enemigos vivos en este momento?
+
+    void UpdateWaveHUD()
+    {
+        if (waveHUDText == null) return;
+        string[] labels = { "E1", "E2", "E3" };
+        List<string> parts = new List<string>();
+        for (int i = 0; i < 3; i++)
+        {
+            if (enemiesByType[i] > 0)
+                parts.Add(labels[i] + ": " + enemiesByType[i]);
+        }
+        waveHUDText.text = string.Join("  ", parts);
+    }
+
+    // Devuelve el nombre seg�n la oleada (pr�xima a mostrar)
+    string GetProcerName(int nextWaveIndex)
+    {
+        if (nextWaveIndex < 2) return procerNames[0];
+        if (nextWaveIndex < 5) return procerNames[1];
+        if (nextWaveIndex < 7) return procerNames[2];
+        return procerNames[3];
+    }
 }
