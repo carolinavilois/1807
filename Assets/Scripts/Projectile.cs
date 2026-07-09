@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Proyectil b�sico: viaja en l�nea recta hacia donde estaba el enemigo al disparar (sin tracking)
+// Usado por Soldado y Tirador. Da�o simple a un solo enemigo.
 public class Projectile : MonoBehaviour
 {
     public float speed = 5f;    // Velocidad a la que vuela el proyectil
@@ -19,7 +21,7 @@ public class Projectile : MonoBehaviour
         // Se mueve en l�nea recta hacia donde estaba el enemigo al disparar
         transform.position += (Vector3)direction * speed * Time.deltaTime;
 
-        // Si el enemigo sigue vivo y el proyectil est� cerca, impacta
+        // Si el enemigo sigue vivo y el proyectil est\u00e1 cerca, impacta
         if (targetEnemy != null)
         {
             if (Vector2.Distance(transform.position, targetEnemy.transform.position) < 0.5f)
@@ -30,7 +32,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void SetTarget(Transform enemyTransform)  // Calcula direcci�n al momento de disparar
+    public void SetTarget(Transform enemyTransform)  // Calcula direcci\u00f3n al momento de disparar
     {
         targetEnemy = enemyTransform.GetComponent<Enemy>();
         direction = (enemyTransform.position - transform.position).normalized;

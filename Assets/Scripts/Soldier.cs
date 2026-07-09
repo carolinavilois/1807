@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Unidad defensiva b�sica: bajo costo (20P), rango medio (4), velocidad de disparo normal (1.5s)
 public class Soldier : MonoBehaviour
 {
     public float range = 4f;                // Distancia m�xima a la que detecta enemigos
@@ -11,8 +12,14 @@ public class Soldier : MonoBehaviour
     void Update()
     {
         Transform target = FindTarget();
-        // Si hay enemigo cerca y pas� el tiempo de recarga, dispara
-        if (target != null && Time.time >= lastFireTime + fireRate)
+
+        // Calcula el cooldown real multiplicando por fireRateMultiplier de WaveSpawner
+        // (1.5x si Avituallamiento est� activo, 1x normalmente)
+        WaveSpawner ws = FindObjectOfType<WaveSpawner>();
+        float effectiveCooldown = fireRate * (ws != null ? ws.fireRateMultiplier : 1f);
+
+        // Si hay enemigo cerca y pas� el tiempo de recarga (ya con el multiplicador), dispara
+        if (target != null && Time.time >= lastFireTime + effectiveCooldown)
         {
             Fire(target);
             lastFireTime = Time.time;

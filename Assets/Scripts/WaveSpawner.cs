@@ -31,12 +31,21 @@ public class WaveSpawner : MonoBehaviour
     public UnityEngine.UI.Text waveText;
     public ProcerDialog procerDialog;
     public UnityEngine.UI.Text waveHUDText;
+    public SupplyRaidUI supplyRaidUI;
+    public GameObject supplyCharacterPrefab;
+    public WaypointPath[] allPaths;
     string[] procerNames = { "Nombre 1", "Nombre 2", "Nombre 3", "Nombre 4" };
 
     int currentWave = 0;         // �ndice de la oleada actual
     int enemiesAlive = 0;        // Enemigos que siguen vivos en esta oleada
     int[] enemiesByType = new int[3];  // 0=E1, 1=E2, 2=E3
     int currentLives;            // Vidas restantes del jugador
+
+    // Bonos de Cabalgatas de Abastecimiento (duran una oleada)
+    public int bonusExtraPatriotism = 0;
+    public float fireRateMultiplier = 1f;
+    int tempBonusLives = 0;
+    bool supplyRaidActive = false;
 
     // Control de dificultad progresiva: si un camino se usa por primera vez, solo enemigos b�sicos
     bool pathAWasUsed = false;
@@ -58,9 +67,11 @@ public class WaveSpawner : MonoBehaviour
 
     void Update()
     {
-        // Espacio inicia la oleada solo si no hay di�logo abierto
+        // Espacio inicia la oleada solo si no hay di�logo ni cabalgata abiertos
         if (Input.GetKeyDown(KeyCode.Space) && currentWave < waves.Length && enemiesAlive == 0
-            && (procerDialog == null || !procerDialog.IsOpen()))
+            && (procerDialog == null || !procerDialog.IsOpen())
+            && !supplyRaidActive
+            && (supplyRaidUI == null || !supplyRaidUI.IsOpen()))
         {
             StartCoroutine(SpawnWave(currentWave));
             currentWave++;
@@ -102,6 +113,17 @@ public class WaveSpawner : MonoBehaviour
         // Espera a que todos los enemigos mueran o lleguen a la base
         yield return new WaitUntil(() => enemiesAlive == 0);
 
+        // Resetear bonos de cabalgata
+        bonusExtraPatriotism = 0;
+        fireRateMultiplier = 1f;
+        if (tempBonusLives > 0)
+        {
+            maxLives -= 2;
+            currentLives = Mathf.Min(currentLives, maxLives);
+            livesText.text = "Vidas: " + currentLives;
+            tempBonusLives = 0;
+        }
+
         if (currentWave >= waves.Length)
         {
             yield return new WaitForSeconds(1.5f);
@@ -117,8 +139,54 @@ public class WaveSpawner : MonoBehaviour
                 procerDialog.Show(BuildProcerMessage(next), procerName);
                 yield return new WaitUntil(() => !procerDialog.IsOpen());
             }
+            // Cabalgata de Abastecimiento en oleadas 3, 6, 9 (�ndices 2, 5, 8)
+            if (currentWave == 2 || currentWave == 5 || currentWave == 8)
+            {
+                yield return StartCoroutine(RunSupplyRaid());
+            }
+
             waveText.text = "Oleada " + (currentWave + 1) + "/10";
         }
+    }
+
+    IEnumerator RunSupplyRaid()
+    {
+        supplyRaidActive = true;
+
+        // Elegir path aleatorio
+        WaypointPath randomPath = allPaths[Random.Range(0, allPaths.Length)];
+
+        // Instanciar personaje en waypoint 0
+        GameObject character = Instantiate(supplyCharacterPrefab, randomPath.GetWaypoint(0).position, Quaternion.identity);
+
+        // Esperar a que llegue al final
+        bool arrived = false;
+        character.GetComponent<SupplyCharacter>().SetPathAndGo(randomPath, () => arrived = true);
+        yield return new WaitUntil(() => arrived);
+
+        // Mostrar panel de bonos
+        int chosen = -1;
+        supplyRaidUI.Show((index) => chosen = index);
+        yield return new WaitUntil(() => chosen >= 0);
+
+        // Aplicar bono
+        switch (chosen)
+        {
+            case 0: // Refuerzos
+                bonusExtraPatriotism = 5;
+                break;
+            case 1: // Reparar Murallas
+                tempBonusLives = 2;
+                maxLives += 2;
+                currentLives += 2;
+                livesText.text = "Vidas: " + currentLives;
+                break;
+            case 2: // Avituallamiento
+                fireRateMultiplier = 1.5f;
+                break;
+        }
+
+        supplyRaidActive = false;
     }
 
     // Elige el tipo de enemigo seg�n los pesos, con dificultad progresiva por camino nuevo
@@ -196,6 +264,8 @@ public class WaveSpawner : MonoBehaviour
     {
         enemiesAlive--;
         enemiesByType[typeIndex]--;
+        if (bonusExtraPatriotism > 0)
+            PatriotismManager.Instance.AddKillReward(bonusExtraPatriotism);
         UpdateWaveHUD();
     }
 

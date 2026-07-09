@@ -3,13 +3,13 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    public int maxHealth = 1;           // Vida máxima del enemigo aunque no se cambia acá, esto es default, se cambia en unity
+    public int maxHealth = 1;           // Vida máxima del enemigo (se configura desde el prefab en Unity)
     public int patriotismReward = 5;    // Patriotismo que da al morir
-    public int enemyTypeIndex;          // 0=E1, 1=E2, 2=E3
+    public int enemyTypeIndex;          // 0=E1 (rojo), 1=E2 (rojo oscuro), 2=E3 (rojo casi negro)
 
-    int currentHealth;                  // Vida actual
-    Image healthBarFill;                // Referencia al fill de la barra de vida
-    float healthBarMaxWidth;            // Ancho m�ximo de la barra (para escalar al recibir daño)
+    int currentHealth;                  // Vida actual (se inicializa en Start)
+    Image healthBarFill;                // Referencia al fill de la barra de vida (verde/amarillo/rojo)
+    float healthBarMaxWidth;            // Ancho máximo de la barra (para escalar al recibir daño)
 
     void Start()
     {
@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
         // Crea un Canvas en WorldSpace como hijo del enemigo (la barra sigue al enemigo)
         GameObject canvasGO = new GameObject("HealthBarCanvas");
         canvasGO.transform.SetParent(transform);
-        canvasGO.transform.localPosition = new Vector3(0, 1, 0);  // AC� se cambia la altura de la barra
+        canvasGO.transform.localPosition = new Vector3(0, 1, 0);  // ACÁ se cambia la altura de la barra
 
         Canvas canvas = canvasGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
@@ -34,7 +34,7 @@ public class Enemy : MonoBehaviour
         RectTransform canvasRect = canvasGO.GetComponent<RectTransform>();
         canvasRect.sizeDelta = new Vector2(barWidth, barHeight);
 
-        // Fill: la parte coloreada (verde/amarillo/rojo) que se achica al recibir da�o
+        // Fill: la parte coloreada (verde/amarillo/rojo) que se achica al recibir daño
         GameObject fillGO = new GameObject("Fill");
         fillGO.transform.SetParent(canvasGO.transform);
         healthBarFill = fillGO.AddComponent<Image>();
@@ -52,14 +52,14 @@ public class Enemy : MonoBehaviour
 
     void UpdateHealthBar()
     {
-        // Escala el ancho del fill seg�n el % de vida restante
+        // Escala el ancho del fill según el % de vida restante y cambia color
         if (healthBarFill == null) return;
 
         float pct = (float)currentHealth / maxHealth;
         RectTransform fillRect = healthBarFill.rectTransform;
         fillRect.sizeDelta = new Vector2(healthBarMaxWidth * pct, fillRect.sizeDelta.y);
 
-        // Cambia color seg�n vida: verde > 50%, amarillo > 25%, rojo < 25%
+        // Cambia color según vida: verde > 50%, amarillo > 25%, rojo <= 25%
         if (pct > 0.5f)
             healthBarFill.color = Color.green;
         else if (pct > 0.25f)
@@ -75,7 +75,9 @@ public class Enemy : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            // Da la recompensa base al morir
             PatriotismManager.Instance.AddKillReward(patriotismReward);
+            // Avisa al WaveSpawner (incluye el tipo para el HUD y bonos extra)
             FindAnyObjectByType<WaveSpawner>().EnemyDied(enemyTypeIndex);
             Destroy(gameObject);
         }
