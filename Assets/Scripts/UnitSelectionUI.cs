@@ -24,7 +24,7 @@ public class UnitSelectionUI : MonoBehaviour
     void Start()
     {
         canvas = GetComponentInParent<Canvas>();
-        cam = FindObjectOfType<Camera>();
+        cam = FindAnyObjectByType<Camera>();
         if (soldierButton != null)
             soldierButton.onClick.AddListener(DeploySoldier);
         if (sharpshooterButton != null)
@@ -127,7 +127,7 @@ public class UnitSelectionUI : MonoBehaviour
         }
         else
         {
-            Debug.Log("No ten�s suficiente Patriotismo. Necesit�s: " + soldierCost);
+            Debug.Log("No tenés suficiente Patriotismo. Necesités: " + soldierCost);
         }
     }
 
@@ -141,7 +141,7 @@ public class UnitSelectionUI : MonoBehaviour
         }
         else
         {
-            Debug.Log("No ten�s suficiente Patriotismo. Necesit�s: " + sharpshooterCost);
+            Debug.Log("No tenés suficiente Patriotismo. Necesités: " + sharpshooterCost);
         }
     }
 
@@ -155,7 +155,7 @@ public class UnitSelectionUI : MonoBehaviour
         }
         else
         {
-            Debug.Log("No ten�s suficiente Patriotismo. Necesit�s: " + cannonCost);
+            Debug.Log("No tenés suficiente Patriotismo. Necesités: " + cannonCost);
         }
     }
 

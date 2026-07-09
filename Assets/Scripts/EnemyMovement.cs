@@ -1,13 +1,13 @@
 using UnityEngine;
 
 // Controla el movimiento del enemigo a lo largo de los waypoints de su camino asignado
-// Al llegar al �ltimo waypoint (la base), avisa al WaveSpawner y se destruye
+// Al llegar al último waypoint (la base), avisa al WaveSpawner y se destruye
 public class EnemyMovement : MonoBehaviour
 {
     public WaypointPath waypointPath;  // Camino que este enemigo va a seguir (asignado por WaveSpawner)
-    public float speed = 2f;           // Velocidad de movimiento (p�xels/segundo)
+    public float speed = 2f;           // Velocidad de movimiento (píxels/segundo)
 
-    int currentWaypointIndex = 0;      // �ndice del pr�ximo waypoint al que dirigirse
+    int currentWaypointIndex = 0;      // �ndice del próximo waypoint al que dirigirse
 
     void Start()
     {
@@ -17,7 +17,7 @@ public class EnemyMovement : MonoBehaviour
 
     void Update()
     {
-        // Mientras queden waypoints, moverse hacia el pr�ximo
+        // Mientras queden waypoints, moverse hacia el próximo
         if (currentWaypointIndex < waypointPath.GetPathLength())
         {
             Transform target = waypointPath.GetWaypoint(currentWaypointIndex);
@@ -25,12 +25,12 @@ public class EnemyMovement : MonoBehaviour
                 transform.position, target.position, speed * Time.deltaTime
             );
 
-            // Si lleg� al waypoint actual, pasar al siguiente
+            // Si llegó al waypoint actual, pasar al siguiente
             if (Vector2.Distance(transform.position, target.position) < 0.1f)
             {
                 currentWaypointIndex++;
 
-                // Si lleg� al �ltimo (la base), avisar al WaveSpawner y destruirse
+                // Si llegó al último (la base), avisar al WaveSpawner y destruirse
                 if (currentWaypointIndex >= waypointPath.GetPathLength())
                 {
                     int typeIndex = GetComponent<Enemy>().enemyTypeIndex;

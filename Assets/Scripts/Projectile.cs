@@ -1,24 +1,24 @@
 using UnityEngine;
 
-// Proyectil b�sico: viaja en l�nea recta hacia donde estaba el enemigo al disparar (sin tracking)
-// Usado por Soldado y Tirador. Da�o simple a un solo enemigo.
+// Proyectil básico: viaja en línea recta hacia donde estaba el enemigo al disparar (sin tracking)
+// Usado por Soldado y Tirador. Daño simple a un solo enemigo.
 public class Projectile : MonoBehaviour
 {
     public float speed = 5f;    // Velocidad a la que vuela el proyectil
-    public int damage = 1;      // Da�o que hace al impactar
+    public int damage = 1;      // Daño que hace al impactar
 
-    Vector2 direction;          // Direcci�n fija calculada al disparar (no persigue al enemigo)
-    Enemy targetEnemy;          // Referencia al Enemy para hacerle da�o
+    Vector2 direction;          // Dirección fija calculada al disparar (no persigue al enemigo)
+    Enemy targetEnemy;          // Referencia al Enemy para hacerle daño
 
     void Start()
     {
-        // Se autodestruye a los 3 segundos si no impact� (l�mite de alcance)
+        // Se autodestruye a los 3 segundos si no impactó (límite de alcance)
         Destroy(gameObject, 3f);
     }
 
     void Update()
     {
-        // Se mueve en l�nea recta hacia donde estaba el enemigo al disparar
+        // Se mueve en línea recta hacia donde estaba el enemigo al disparar
         transform.position += (Vector3)direction * speed * Time.deltaTime;
 
         // Si el enemigo sigue vivo y el proyectil est\u00e1 cerca, impacta

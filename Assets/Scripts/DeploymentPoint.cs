@@ -10,14 +10,14 @@ public class DeploymentPoint : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // Convierte posici\u00f3n del mouse a coordenadas del mundo (necesario con Canvas en modo c\u00e1mara)
-            Camera cam = FindObjectOfType<Camera>();
+            Camera cam = FindAnyObjectByType<Camera>();
             if (cam == null) return;
             Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
 
             // Si el click est\u00e1 dentro del collider de este DeploymentPoint, abre el panel
             if (GetComponent<Collider2D>() != null && GetComponent<Collider2D>().OverlapPoint(mousePos))
             {
-                FindObjectOfType<UnitSelectionUI>().Show(transform);
+                FindAnyObjectByType<UnitSelectionUI>().Show(transform);
             }
         }
     }

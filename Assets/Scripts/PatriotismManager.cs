@@ -12,7 +12,7 @@ public class PatriotismManager : MonoBehaviour
 
     void Awake()
     {
-        Instance = this;  // Se registra a s� mismo para que otros scripts lo encuentren
+        Instance = this;  // Se registra a sí mismo para que otros scripts lo encuentren
     }
 
     void Start()

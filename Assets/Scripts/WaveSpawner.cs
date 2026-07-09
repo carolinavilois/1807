@@ -5,13 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class WaveSpawner : MonoBehaviour
 {
-    // Configuraci�n de cada oleada (se edita desde el Inspector)
+    // Configuración de cada oleada (se edita desde el Inspector)
     [System.Serializable]
     public class WaveConfig
     {
-        public int pathACount = 3;            // Cu�ntos enemigos por Path A
-        public int pathBCount = 0;            // Cu�ntos enemigos por Path B
-        public int pathCCount = 0;            // Cu�ntos enemigos por Path C
+        public int pathACount = 3;            // Cuántos enemigos por Path A
+        public int pathBCount = 0;            // Cuántos enemigos por Path B
+        public int pathCCount = 0;            // Cuántos enemigos por Path C
         public float spawnDelay = 1f;         // Segundos entre cada enemigo
         [Range(0, 100)] public int enemy1Weight = 100;
         [Range(0, 100)] public int enemy2Weight = 0;
@@ -36,7 +36,7 @@ public class WaveSpawner : MonoBehaviour
     public WaypointPath[] allPaths;
     string[] procerNames = { "Nombre 1", "Nombre 2", "Nombre 3", "Nombre 4" };
 
-    int currentWave = 0;         // �ndice de la oleada actual
+    int currentWave = 0;         // índice de la oleada actual
     int enemiesAlive = 0;        // Enemigos que siguen vivos en esta oleada
     int[] enemiesByType = new int[3];  // 0=E1, 1=E2, 2=E3
     int currentLives;            // Vidas restantes del jugador
@@ -47,7 +47,7 @@ public class WaveSpawner : MonoBehaviour
     int tempBonusLives = 0;
     bool supplyRaidActive = false;
 
-    // Control de dificultad progresiva: si un camino se usa por primera vez, solo enemigos b�sicos
+    // Control de dificultad progresiva: si un camino se usa por primera vez, solo enemigos básicos
     bool pathAWasUsed = false;
     bool pathBWasUsed = false;
     bool pathCWasUsed = false;
@@ -67,7 +67,7 @@ public class WaveSpawner : MonoBehaviour
 
     void Update()
     {
-        // Espacio inicia la oleada solo si no hay di�logo ni cabalgata abiertos
+        // Espacio inicia la oleada solo si no hay diálogo ni cabalgata abiertos
         if (Input.GetKeyDown(KeyCode.Space) && currentWave < waves.Length && enemiesAlive == 0
             && (procerDialog == null || !procerDialog.IsOpen())
             && !supplyRaidActive
@@ -131,7 +131,7 @@ public class WaveSpawner : MonoBehaviour
         }
         else
         {
-            // Muestra el di�logo del pr�cer con info de la pr�xima oleada
+            // Muestra el diálogo del prócer con info de la próxima oleada
             if (procerDialog != null)
             {
                 WaveConfig next = waves[currentWave];
@@ -139,7 +139,7 @@ public class WaveSpawner : MonoBehaviour
                 procerDialog.Show(BuildProcerMessage(next), procerName);
                 yield return new WaitUntil(() => !procerDialog.IsOpen());
             }
-            // Cabalgata de Abastecimiento en oleadas 3, 6, 9 (�ndices 2, 5, 8)
+            // Cabalgata de Abastecimiento en oleadas 3, 6, 9 (índices 2, 5, 8)
             if (currentWave == 2 || currentWave == 5 || currentWave == 8)
             {
                 yield return StartCoroutine(RunSupplyRaid());
@@ -189,10 +189,10 @@ public class WaveSpawner : MonoBehaviour
         supplyRaidActive = false;
     }
 
-    // Elige el tipo de enemigo seg�n los pesos, con dificultad progresiva por camino nuevo
+    // Elige el tipo de enemigo según los pesos, con dificultad progresiva por camino nuevo
     GameObject ChooseEnemyType(WaveConfig config, WaypointPath path)
     {
-        // Si este camino se abre por primera vez, solo enemigos b�sicos (Enemy1)
+        // Si este camino se abre por primera vez, solo enemigos básicos (Enemy1)
         if ((path == pathA && !pathAWasUsed) ||
             (path == pathB && !pathBWasUsed) ||
             (path == pathC && !pathCWasUsed))
@@ -200,7 +200,7 @@ public class WaveSpawner : MonoBehaviour
             return enemy1Prefab;
         }
 
-        // Selecci�n ponderada seg�n los pesos de la oleada
+        // Selección ponderada según los pesos de la oleada
         int total = config.enemy1Weight + config.enemy2Weight + config.enemy3Weight;
         int roll = Random.Range(0, total);
         if (roll < config.enemy1Weight) return enemy1Prefab;
@@ -208,12 +208,12 @@ public class WaveSpawner : MonoBehaviour
         return enemy3Prefab;
     }
 
-    // Genera el mensaje del pr�cer seg�n los caminos activos en la pr�xima oleada
+    // Genera el mensaje del prócer según los caminos activos en la próxima oleada
     string BuildProcerMessage(WaveConfig config)
     {
         int total = config.pathACount + config.pathBCount + config.pathCCount;
         List<string> pathNames = new List<string>();
-        if (config.pathACount > 0) pathNames.Add("el Camino C�ntrico");
+        if (config.pathACount > 0) pathNames.Add("el Camino Céntrico");
         if (config.pathBCount > 0) pathNames.Add("el Camino Inferior");
         if (config.pathCCount > 0) pathNames.Add("el Camino Superior");
 
@@ -222,10 +222,10 @@ public class WaveSpawner : MonoBehaviour
         else if (pathNames.Count == 2) pathsStr = pathNames[0] + " y " + pathNames[1];
         else pathsStr = pathNames[0] + ", " + pathNames[1] + " y " + pathNames[2];
 
-        string enemies = total == 1 ? "1 ingl�s" : total + " ingleses";
+        string enemies = total == 1 ? "1 inglés" : total + " ingleses";
         string verbo = total == 1 ? "avanza" : "avanzan";
 
-        return "�Alerta, Liniers! " + enemies + " " + verbo + " por " + pathsStr + ". �Preparad vuestras defensas!";
+        return "¡Alerta, Liniers! " + enemies + " " + verbo + " por " + pathsStr + ". ¡Preparad vuestras defensas!";
     }
 
     // Crea un enemigo en el camino indicado con el tipo de enemigo correspondiente
@@ -269,7 +269,7 @@ public class WaveSpawner : MonoBehaviour
         UpdateWaveHUD();
     }
 
-    public bool HasActiveEnemies() => enemiesAlive > 0;  // �Hay enemigos vivos en este momento?
+    public bool HasActiveEnemies() => enemiesAlive > 0;  // ¿Hay enemigos vivos en este momento?
 
     void UpdateWaveHUD()
     {
@@ -284,7 +284,7 @@ public class WaveSpawner : MonoBehaviour
         waveHUDText.text = string.Join("  ", parts);
     }
 
-    // Devuelve el nombre seg�n la oleada (pr�xima a mostrar)
+    // Devuelve el nombre según la oleada (próxima a mostrar)
     string GetProcerName(int nextWaveIndex)
     {
         if (nextWaveIndex < 2) return procerNames[0];

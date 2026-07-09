@@ -4,19 +4,19 @@ using UnityEngine.UI;
 public class SupplyRaidUI : MonoBehaviour
 {
     public GameObject supplyPanel;          // El panel UI que contiene los 3 botones de bonos
-    public Button refuerzosButton;          // Bot�n: +5 Patriotismo por kill en pr�xima oleada
-    public Button murallasButton;           // Bot�n: +2 Vidas temporales en pr�xima oleada
-    public Button avituallamientoButton;    // Bot�n: 1.5x velocidad de disparo en pr�xima oleada
+    public Button refuerzosButton;          // Botón: +5 Patriotismo por kill en próxima oleada
+    public Button murallasButton;           // Botón: +2 Vidas temporales en próxima oleada
+    public Button avituallamientoButton;    // Botón: 1.5x velocidad de disparo en próxima oleada
 
-    System.Action<int> onBonusSelected;     // Callback que recibe el �ndice del bono elegido (0, 1, 2)
-    bool waitingForChoice;                  // Evita elegir m�s de una vez
+    System.Action<int> onBonusSelected;     // Callback que recibe el índice del bono elegido (0, 1, 2)
+    bool waitingForChoice;                  // Evita elegir más de una vez
 
     void Start()
     {
         // El panel empieza oculto; se activa desde WaveSpawner cuando toca
         if (supplyPanel != null)
             supplyPanel.SetActive(false);
-        // Cada bot�n llama a ChooseBonus con su �ndice fijo
+        // Cada botón llama a ChooseBonus con su índice fijo
         if (refuerzosButton != null)
             refuerzosButton.onClick.AddListener(() => ChooseBonus(0));
         if (murallasButton != null)
@@ -34,17 +34,17 @@ public class SupplyRaidUI : MonoBehaviour
             supplyPanel.SetActive(true);
     }
 
-    // Al clickear un bot�n, cierra el panel y ejecuta el callback con el �ndice
+    // Al clickear un botón, cierra el panel y ejecuta el callback con el índice
     void ChooseBonus(int index)
     {
-        if (!waitingForChoice) return;  // Ignora clicks si ya eligi�
+        if (!waitingForChoice) return;  // Ignora clicks si ya eligió
         waitingForChoice = false;
         if (supplyPanel != null)
             supplyPanel.SetActive(false);
         onBonusSelected?.Invoke(index);
     }
 
-    // �til para que WaveSpawner sepa si el panel est� abierto (bloquea Space)
+    // útil para que WaveSpawner sepa si el panel esté abierto (bloquea Space)
     public bool IsOpen()
     {
         return supplyPanel != null && supplyPanel.activeSelf;
