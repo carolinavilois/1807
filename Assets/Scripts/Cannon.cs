@@ -1,19 +1,83 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
-// Unidad defensiva pesada: alto costo (60P), daño de área con Cannonball, disparo muy lento (4s)
+// Unidad defensiva pesada: alto costo (60P), da�o de �rea con Cannonball, disparo muy lento (4s), vida 8
 public class Cannon : MonoBehaviour
 {
-    public float range = 5f;                // Rango medio (menor que Tirador, mayor que Soldado)
-    public float fireRate = 4f;             // El más lento de todas las unidades
-    public GameObject projectilePrefab;     // Prefab del Cannonball (explosión de área)
+    public float range = 5f;
+    public float fireRate = 4f;
+    public GameObject projectilePrefab;
+    public int maxHealth = 16;
 
-    float lastFireTime;                     // último momento en que disparó
+    float lastFireTime;
+    int currentHealth;
+    SpriteRenderer spriteRenderer;
+    Color originalColor;
+    Image healthBarFill;
+    float healthBarMaxWidth;
+
+    void Start()
+    {
+        currentHealth = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+            originalColor = spriteRenderer.color;
+        CreateHealthBar();
+    }
+
+    void CreateHealthBar()
+    {
+        GameObject canvasGO = new GameObject("HealthBarCanvas");
+        canvasGO.transform.SetParent(transform);
+        canvasGO.transform.localPosition = new Vector3(0, 0.8f, 0);
+
+        Canvas canvas = canvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.WorldSpace;
+        canvas.sortingOrder = 10;
+
+        float barWidth = 1f;
+        float barHeight = 0.08f;
+
+        RectTransform canvasRect = canvasGO.GetComponent<RectTransform>();
+        canvasRect.sizeDelta = new Vector2(barWidth, barHeight);
+
+        GameObject fillGO = new GameObject("Fill");
+        fillGO.transform.SetParent(canvasGO.transform);
+        healthBarFill = fillGO.AddComponent<Image>();
+        healthBarFill.color = Color.green;
+
+        RectTransform fillRect = fillGO.GetComponent<RectTransform>();
+        fillRect.sizeDelta = new Vector2(barWidth, barHeight);
+        fillRect.localPosition = Vector3.zero;
+        fillRect.anchorMin = new Vector2(0, 0.5f);
+        fillRect.anchorMax = new Vector2(0, 0.5f);
+        fillRect.pivot = new Vector2(0, 0.5f);
+
+        healthBarMaxWidth = barWidth;
+    }
+
+    void UpdateHealthBar()
+    {
+        if (healthBarFill == null) return;
+        float pct = (float)currentHealth / maxHealth;
+        RectTransform fillRect = healthBarFill.rectTransform;
+        fillRect.sizeDelta = new Vector2(healthBarMaxWidth * pct, fillRect.sizeDelta.y);
+
+        if (pct > 0.5f)
+            healthBarFill.color = Color.green;
+        else if (pct > 0.25f)
+            healthBarFill.color = Color.yellow;
+        else
+            healthBarFill.color = Color.red;
+    }
 
     void Update()
     {
+        if (currentHealth <= 0) return;
+
         Transform target = FindTarget();
 
-        // Aplica multiplicador de velocidad de disparo desde las Cabalgatas (Avituallamiento)
         WaveSpawner ws = FindAnyObjectByType<WaveSpawner>();
         float effectiveCooldown = fireRate * (ws != null ? ws.fireRateMultiplier : 1f);
 
@@ -24,7 +88,7 @@ public class Cannon : MonoBehaviour
         }
     }
 
-    Transform FindTarget()  // Busca el enemigo más cercano dentro del rango
+    Transform FindTarget()
     {
         float closestDistance = range;
         Transform closestEnemy = null;
@@ -42,9 +106,42 @@ public class Cannon : MonoBehaviour
         return closestEnemy;
     }
 
-    void Fire(Transform target)  // Dispara una bala de cañón que explota al impactar (daño en área)
+    void Fire(Transform target)
     {
         GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
         proj.GetComponent<Cannonball>().SetTarget(target);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (currentHealth <= 0) return;
+        currentHealth -= damage;
+        UpdateHealthBar();
+        StartCoroutine(FlashTint());
+        if (currentHealth <= 0)
+            StartCoroutine(Die());
+    }
+
+    IEnumerator Die()
+    {
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+        yield return new WaitForSeconds(0.15f);
+        Destroy(gameObject);
+    }
+
+    IEnumerator FlashTint()
+    {
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.red;
+        for (int i = 0; i < 5; i++) yield return null;
+        if (spriteRenderer != null)
+            spriteRenderer.color = originalColor;
+        yield return null;
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.red;
+        for (int i = 0; i < 3; i++) yield return null;
+        if (spriteRenderer != null)
+            spriteRenderer.color = originalColor;
     }
 }

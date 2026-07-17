@@ -145,3 +145,4 @@ MonoBehaviour:
   range: 2
   fireRate: 1.5
   projectilePrefab: {fileID: 1850364650732255031, guid: 1525569dd4ffe184d96aa1b2a5c85b7e, type: 3}
+  maxHealth: 10

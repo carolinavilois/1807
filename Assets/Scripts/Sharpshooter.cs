@@ -1,19 +1,83 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
-// Unidad defensiva de largo alcance: costo medio (40P), rango alto (7), disparo lento (2s)
+// Unidad defensiva de largo alcance: costo medio (40P), rango alto (7), disparo lento (2s), vida 3
 public class Sharpshooter : MonoBehaviour
 {
-    public float range = 7f;                // Mayor rango de todas las unidades
-    public float fireRate = 2f;             // Dispara más lento que el Soldado
-    public GameObject projectilePrefab;     // Proyectil simple (sin daño de área)
+    public float range = 7f;
+    public float fireRate = 2f;
+    public GameObject projectilePrefab;
+    public int maxHealth = 6;
 
-    float lastFireTime;                     // último momento en que disparó
+    float lastFireTime;
+    int currentHealth;
+    SpriteRenderer spriteRenderer;
+    Color originalColor;
+    Image healthBarFill;
+    float healthBarMaxWidth;
+
+    void Start()
+    {
+        currentHealth = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+            originalColor = spriteRenderer.color;
+        CreateHealthBar();
+    }
+
+    void CreateHealthBar()
+    {
+        GameObject canvasGO = new GameObject("HealthBarCanvas");
+        canvasGO.transform.SetParent(transform);
+        canvasGO.transform.localPosition = new Vector3(0, 0.8f, 0);
+
+        Canvas canvas = canvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.WorldSpace;
+        canvas.sortingOrder = 10;
+
+        float barWidth = 1f;
+        float barHeight = 0.08f;
+
+        RectTransform canvasRect = canvasGO.GetComponent<RectTransform>();
+        canvasRect.sizeDelta = new Vector2(barWidth, barHeight);
+
+        GameObject fillGO = new GameObject("Fill");
+        fillGO.transform.SetParent(canvasGO.transform);
+        healthBarFill = fillGO.AddComponent<Image>();
+        healthBarFill.color = Color.green;
+
+        RectTransform fillRect = fillGO.GetComponent<RectTransform>();
+        fillRect.sizeDelta = new Vector2(barWidth, barHeight);
+        fillRect.localPosition = Vector3.zero;
+        fillRect.anchorMin = new Vector2(0, 0.5f);
+        fillRect.anchorMax = new Vector2(0, 0.5f);
+        fillRect.pivot = new Vector2(0, 0.5f);
+
+        healthBarMaxWidth = barWidth;
+    }
+
+    void UpdateHealthBar()
+    {
+        if (healthBarFill == null) return;
+        float pct = (float)currentHealth / maxHealth;
+        RectTransform fillRect = healthBarFill.rectTransform;
+        fillRect.sizeDelta = new Vector2(healthBarMaxWidth * pct, fillRect.sizeDelta.y);
+
+        if (pct > 0.5f)
+            healthBarFill.color = Color.green;
+        else if (pct > 0.25f)
+            healthBarFill.color = Color.yellow;
+        else
+            healthBarFill.color = Color.red;
+    }
 
     void Update()
     {
+        if (currentHealth <= 0) return;
+
         Transform target = FindTarget();
 
-        // Aplica multiplicador de velocidad de disparo desde las Cabalgatas (Avituallamiento)
         WaveSpawner ws = FindAnyObjectByType<WaveSpawner>();
         float effectiveCooldown = fireRate * (ws != null ? ws.fireRateMultiplier : 1f);
 
@@ -24,7 +88,7 @@ public class Sharpshooter : MonoBehaviour
         }
     }
 
-    Transform FindTarget()  // Busca el enemigo más cercano dentro del rango
+    Transform FindTarget()
     {
         float closestDistance = range;
         Transform closestEnemy = null;
@@ -42,9 +106,42 @@ public class Sharpshooter : MonoBehaviour
         return closestEnemy;
     }
 
-    void Fire(Transform target)  // Crea un proyectil en la posición del tirador hacia el objetivo
+    void Fire(Transform target)
     {
         GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-        proj.GetComponent<Projectile>().SetTarget(target);
+        proj.GetComponent<SharpshooterProjectile>().SetTarget(target);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (currentHealth <= 0) return;
+        currentHealth -= damage;
+        UpdateHealthBar();
+        StartCoroutine(FlashTint());
+        if (currentHealth <= 0)
+            StartCoroutine(Die());
+    }
+
+    IEnumerator Die()
+    {
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+        yield return new WaitForSeconds(0.15f);
+        Destroy(gameObject);
+    }
+
+    IEnumerator FlashTint()
+    {
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.red;
+        for (int i = 0; i < 5; i++) yield return null;
+        if (spriteRenderer != null)
+            spriteRenderer.color = originalColor;
+        yield return null;
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.red;
+        for (int i = 0; i < 3; i++) yield return null;
+        if (spriteRenderer != null)
+            spriteRenderer.color = originalColor;
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,15 +7,22 @@ public class Enemy : MonoBehaviour
     public int maxHealth = 1;           // Vida máxima del enemigo (se configura desde el prefab en Unity)
     public int patriotismReward = 5;    // Patriotismo que da al morir
     public int enemyTypeIndex;          // 0=E1 (rojo), 1=E2 (rojo oscuro), 2=E3 (rojo casi negro)
+    public int meleeDamage = 1;         // Daño que hace al atacar en melee
 
     int currentHealth;                  // Vida actual (se inicializa en Start)
     Image healthBarFill;                // Referencia al fill de la barra de vida (verde/amarillo/rojo)
     float healthBarMaxWidth;            // Ancho máximo de la barra (para escalar al recibir daño)
+    SpriteRenderer spriteRenderer;      // SpriteRenderer del enemigo (para el tint negro al recibir daño)
+    Color originalColor;                // Color original del SpriteRenderer (para restaurarlo tras el tint)
+    public bool isDead;                 // Evita restaurar color si el enemigo muere durante el flash
 
     void Start()
     {
         currentHealth = maxHealth;
         CreateHealthBar();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+            originalColor = spriteRenderer.color;
     }
 
     void CreateHealthBar()
@@ -73,13 +81,39 @@ public class Enemy : MonoBehaviour
         currentHealth -= damage;
         UpdateHealthBar();
 
+        StartCoroutine(FlashTint());  // Flash rojo al recibir daño (aunque muera)
+
         if (currentHealth <= 0)
         {
-            // Da la recompensa base al morir
-            PatriotismManager.Instance.AddKillReward(patriotismReward);
-            // Avisa al WaveSpawner (incluye el tipo para el HUD y bonos extra)
-            FindAnyObjectByType<WaveSpawner>().EnemyDied(enemyTypeIndex);
-            Destroy(gameObject);
+            isDead = true;
+            StartCoroutine(DieWithDelay());
         }
+    }
+
+    IEnumerator FlashTint()  // Flash rojo 5 frames, pausa 1 frame, flash rojo 3 frames
+    {
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.red;
+        for (int i = 0; i < 5; i++) yield return null;
+        if (!isDead && spriteRenderer != null)
+            spriteRenderer.color = originalColor;
+        yield return null;
+        if (!isDead && spriteRenderer != null)
+            spriteRenderer.color = Color.red;
+        for (int i = 0; i < 3; i++) yield return null;
+        if (!isDead && spriteRenderer != null)
+            spriteRenderer.color = originalColor;
+    }
+
+    IEnumerator DieWithDelay()  // Espera a que termine el flash antes de destruir
+    {
+        // Desactiva el collider para que no reciba más daño ni bloquee proyectiles
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        yield return new WaitForSeconds(0.15f);  // tiempo suficiente para el flash completo
+        PatriotismManager.Instance.AddKillReward(patriotismReward);
+        FindAnyObjectByType<WaveSpawner>().EnemyDied(enemyTypeIndex);
+        Destroy(gameObject);
     }
 }

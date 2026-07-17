@@ -107,4 +107,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sharpshooter
   range: 6
   fireRate: 2
-  projectilePrefab: {fileID: 1850364650732255031, guid: 1525569dd4ffe184d96aa1b2a5c85b7e, type: 3}
+  projectilePrefab: {fileID: 1850364650732255031, guid: cf26b25623409f249a483655d5f41244, type: 3}
+  maxHealth: 6

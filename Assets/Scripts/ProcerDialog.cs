@@ -13,9 +13,6 @@ public class ProcerDialog : MonoBehaviour
 
     void Start()
     {
-        // El panel empieza oculto; se activa desde WaveSpawner
-        if (dialogPanel != null)
-            dialogPanel.SetActive(false);
         // Conecta el bot�n Entendido para ocultar el di�logo
         if (entendidoButton != null)
             entendidoButton.onClick.AddListener(Hide);
