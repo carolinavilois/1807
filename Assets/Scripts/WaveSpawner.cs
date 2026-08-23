@@ -34,7 +34,7 @@ public class WaveSpawner : MonoBehaviour
     public SupplyRaidUI supplyRaidUI;
     public GameObject supplyCharacterPrefab;
     public WaypointPath[] allPaths;
-    string[] procerNames = { "Nombre 1", "Nombre 2", "Nombre 3", "Nombre 4" };
+    string[] procerNames = { "Cornelio Saavedra", "Bernardo de Velasco", "César Balbiani", "Cornelio Saavedra" };
 
     int currentWave = 0;         // índice de la oleada actual
     int enemiesAlive = 0;        // Enemigos que siguen vivos en esta oleada
@@ -47,10 +47,13 @@ public class WaveSpawner : MonoBehaviour
     int tempBonusLives = 0;
     bool supplyRaidActive = false;
 
-    // Control de dificultad progresiva: si un camino se usa por primera vez, solo enemigos básicos
+    // Control de caminos usados y preview de tier 2+ en camino nuevo (solo 1 E2/E3 por camino nuevo)
     bool pathAWasUsed = false;
     bool pathBWasUsed = false;
     bool pathCWasUsed = false;
+    bool pathAPreviewUsed = false;
+    bool pathBPreviewUsed = false;
+    bool pathCPreviewUsed = false;
 
     void Start()
     {
@@ -189,19 +192,12 @@ public class WaveSpawner : MonoBehaviour
         supplyRaidActive = false;
     }
 
-    // Elige el tipo de enemigo según los pesos, con dificultad progresiva por camino nuevo
+    // Elige el tipo de enemigo según los pesos (Enemy1 libre, respeta weights siempre)
     GameObject ChooseEnemyType(WaveConfig config, WaypointPath path)
     {
-        // Si este camino se abre por primera vez, solo enemigos básicos (Enemy1)
-        if ((path == pathA && !pathAWasUsed) ||
-            (path == pathB && !pathBWasUsed) ||
-            (path == pathC && !pathCWasUsed))
-        {
-            return enemy1Prefab;
-        }
-
-        // Selección ponderada según los pesos de la oleada
+        // Selección ponderada según los pesos de la oleada — sin forzar E1
         int total = config.enemy1Weight + config.enemy2Weight + config.enemy3Weight;
+        if (total <= 0) return enemy1Prefab;
         int roll = Random.Range(0, total);
         if (roll < config.enemy1Weight) return enemy1Prefab;
         if (roll < config.enemy1Weight + config.enemy2Weight) return enemy2Prefab;
@@ -228,12 +224,41 @@ public class WaveSpawner : MonoBehaviour
         return "¡Alerta, Liniers! " + enemies + " " + verbo + " por " + pathsStr + ". ¡Preparad vuestras defensas!";
     }
 
-    // Crea un enemigo en el camino indicado con el tipo de enemigo correspondiente
+    // Crea un enemigo en el camino indicado, con reruteo si es E2/E3 en camino nuevo
     void SpawnEnemy(WaypointPath path, WaveConfig config)
     {
         if (path == null) return;
         GameObject prefab = ChooseEnemyType(config, path);
         if (prefab == null) return;
+
+        bool isTier2Plus = (prefab == enemy2Prefab || prefab == enemy3Prefab);
+        bool isNewPath = (path == pathA && !pathAWasUsed) || (path == pathB && !pathBWasUsed) || (path == pathC && !pathCWasUsed);
+
+        if (isTier2Plus && isNewPath)
+        {
+            // Solo 1 preview de E2/E3 por camino nuevo, el resto se rerutea al camino viejo
+            bool previewUsed = (path == pathA && pathAPreviewUsed) || (path == pathB && pathBPreviewUsed) || (path == pathC && pathCPreviewUsed);
+            if (!previewUsed)
+            {
+                if (path == pathA) pathAPreviewUsed = true;
+                else if (path == pathB) pathBPreviewUsed = true;
+                else if (path == pathC) pathCPreviewUsed = true;
+            }
+            else
+            {
+                // Rerutea al camino ya usado, preservando el tipo E2/E3 y respetando el weight
+                WaypointPath fallback = null;
+                if (path != pathA && pathAWasUsed) fallback = pathA;
+                else if (path != pathB && pathBWasUsed) fallback = pathB;
+                else if (path != pathC && pathCWasUsed) fallback = pathC;
+                else if (pathAWasUsed) fallback = pathA;
+                else if (pathBWasUsed) fallback = pathB;
+
+                if (fallback != null) path = fallback;
+                else prefab = enemy1Prefab; // Fallback extremo: sin camino viejo disponible, degradar a E1
+            }
+        }
+
         GameObject enemy = Instantiate(prefab, path.GetWaypoint(0).position, Quaternion.identity);
         Enemy enemyScript = enemy.GetComponent<Enemy>();
         enemyScript.enemyTypeIndex = prefab == enemy2Prefab ? 1 : prefab == enemy3Prefab ? 2 : 0;

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8948187652516373247}
   - component: {fileID: 1520433715499665561}
   - component: {fileID: -1837275358721125840}
+  - component: {fileID: 356300238286644973}
   m_Layer: 0
   m_Name: Enemy3
   m_TagString: Untagged
@@ -29,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.79289, y: -0.23946, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -81,9 +82,9 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -3118737357920330795, guid: c93fad13660d0c44184e78f43dcc9969, type: 3}
   m_Color: {r: 0.13207549, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -108,6 +109,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   waypointPath: {fileID: 0}
   speed: 2
+  meleeRange: 0.8
+  attackCooldown: 1
 --- !u!114 &-1837275358721125840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,3 +125,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   maxHealth: 6
   patriotismReward: 15
+  enemyTypeIndex: 0
+  meleeDamage: 1
+  isDead: 0
+--- !u!95 &356300238286644973
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8383023262139323187}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 573629a9812c631479321506b7df1f91, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
