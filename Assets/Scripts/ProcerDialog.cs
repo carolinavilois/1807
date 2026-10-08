@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,7 +6,7 @@ public class ProcerDialog : MonoBehaviour
 {
     public GameObject dialogPanel;
     public Image portraitImage;
-    public Text dialogText;
+    public TextMeshProUGUI dialogText;
     public Text nameText;
     public Button entendidoButton;
     public Sprite[] procerPortraits;
