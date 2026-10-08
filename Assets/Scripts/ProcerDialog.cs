@@ -6,8 +6,8 @@ public class ProcerDialog : MonoBehaviour
 {
     public GameObject dialogPanel;
     public Image portraitImage;
-    public TextMeshProUGUI dialogText;
-    public Text nameText;
+    public TMP_Text dialogText;
+    public TMP_Text nameText;
     public Button entendidoButton;
     public Sprite[] procerPortraits;
     string[] procerNamesRef = { "Cornelio Saavedra", "Bernardo de Velasco", "César Balbiani", "Cornelio Saavedra" };

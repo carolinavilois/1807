@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class PatriotismManager : MonoBehaviour
@@ -6,7 +7,7 @@ public class PatriotismManager : MonoBehaviour
 
     public int startingPatriotism = 30;     // Patriotismo inicial al empezar la partida
     public int passiveIncome = 1;           // Cuanto gana por segundo durante una oleada
-    public UnityEngine.UI.Text patriotismText;
+    public TMP_Text patriotismText;
 
     int currentPatriotism;                  // Patriotismo actual del jugador
 

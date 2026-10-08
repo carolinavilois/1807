@@ -1,7 +1,9 @@
+using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class WaveSpawner : MonoBehaviour
 {
@@ -27,10 +29,10 @@ public class WaveSpawner : MonoBehaviour
     public WaypointPath pathC;
     public WaveConfig[] waves = new WaveConfig[10];
     public int maxLives = 10;
-    public UnityEngine.UI.Text livesText;
-    public UnityEngine.UI.Text waveText;
+    public TMP_Text livesText;
+    public TMP_Text waveText;
     public ProcerDialog procerDialog;
-    public UnityEngine.UI.Text waveHUDText;
+    public TMP_Text waveHUDText;
     public SupplyRaidUI supplyRaidUI;
     public GameObject supplyCharacterPrefab;
     public WaypointPath[] allPaths;
