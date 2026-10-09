@@ -48,6 +48,8 @@ public class WaveSpawner : MonoBehaviour
     public float fireRateMultiplier = 1f;
     int tempBonusLives = 0;
     bool supplyRaidActive = false;
+    bool waveInProgress;
+    bool wasReadyToStart;
 
     // Control de caminos usados y preview de tier 2+ en camino nuevo (solo 1 E2/E3 por camino nuevo)
     bool pathAWasUsed = false;
@@ -70,19 +72,31 @@ public class WaveSpawner : MonoBehaviour
         }
     }
 
-    void Update()
+    bool CanStartNextWave()
     {
-        // Espacio inicia la oleada solo si no hay diálogo ni cabalgata abiertos
-        if (Input.GetKeyDown(KeyCode.Space) && currentWave < waves.Length && enemiesAlive == 0
+        return !waveInProgress && currentWave < waves.Length && enemiesAlive == 0
             && (procerDialog == null || !procerDialog.IsOpen())
             && !supplyRaidActive
-            && (supplyRaidUI == null || !supplyRaidUI.IsOpen()))
-        {
-            StartCoroutine(SpawnWave(currentWave));
-            currentWave++;
-        }
+            && (supplyRaidUI == null || !supplyRaidUI.IsOpen());
     }
 
+    void Update()
+    {
+        bool readyToStart = CanStartNextWave();
+        if (readyToStart != wasReadyToStart)
+        {
+            wasReadyToStart = readyToStart;
+            UpdateWaveHUD();
+        }
+
+        if (readyToStart && Input.GetKeyDown(KeyCode.Space))
+        {
+            int waveIndex = currentWave++;
+            waveInProgress = true;
+            UpdateWaveHUD();
+            StartCoroutine(SpawnWave(waveIndex));
+        }
+    }
     IEnumerator SpawnWave(int waveIndex)
     {
         WaveConfig config = waves[waveIndex];
@@ -132,7 +146,7 @@ public class WaveSpawner : MonoBehaviour
         if (currentWave >= waves.Length)
         {
             yield return new WaitForSeconds(1.5f);
-            SceneManager.LoadScene("VictoryScene");
+            ResultManager.Show(true);
         }
         else
         {
@@ -152,6 +166,7 @@ public class WaveSpawner : MonoBehaviour
 
             waveText.text = "Oleada " + (currentWave + 1) + "/10";
         }
+        waveInProgress = false;
     }
 
     IEnumerator RunSupplyRaid()
@@ -284,7 +299,7 @@ public class WaveSpawner : MonoBehaviour
 
     void GameOver()
     {
-        SceneManager.LoadScene("DefeatScene");
+        ResultManager.Show(false);
     }
 
     public void EnemyDied(int typeIndex)
@@ -301,14 +316,12 @@ public class WaveSpawner : MonoBehaviour
     void UpdateWaveHUD()
     {
         if (waveHUDText == null) return;
-        string[] labels = { "E1", "E2", "E3" };
-        List<string> parts = new List<string>();
-        for (int i = 0; i < 3; i++)
+        if (CanStartNextWave())
         {
-            if (enemiesByType[i] > 0)
-                parts.Add(labels[i] + ": " + enemiesByType[i]);
+            waveHUDText.text = "<b>ESPACIO</b>: iniciar oleada · Enemigos desde la izquierda";
+            return;
         }
-        waveHUDText.text = string.Join("  ", parts);
+        waveHUDText.text = string.Empty;
     }
 
     // Devuelve el nombre según la oleada (próxima a mostrar)
