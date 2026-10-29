@@ -22,6 +22,22 @@ public class PatriotismManager : MonoBehaviour
         UpdateUI();
         // +1 por segundo mientras haya enemigos vivos en la oleada
         InvokeRepeating(nameof(AddPassiveIncome), 1f, 1f);
+
+        // Auto-conecta el botón de debug de patriotismo (da 100 puntos)
+        foreach (var button in FindObjectsByType<UnityEngine.UI.Button>(FindObjectsSortMode.None))
+        {
+            if (button.name.ToLower().StartsWith("debug patri"))
+            {
+                button.onClick.AddListener(AddDebug);
+                break;
+            }
+        }
+    }
+
+    public void AddDebug()  // +100 patriotismo para pruebas
+    {
+        currentPatriotism += 100;
+        UpdateUI();
     }
 
     void AddPassiveIncome()

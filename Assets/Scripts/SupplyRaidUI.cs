@@ -23,6 +23,17 @@ public class SupplyRaidUI : MonoBehaviour
             murallasButton.onClick.AddListener(() => ChooseBonus(1));
         if (avituallamientoButton != null)
             avituallamientoButton.onClick.AddListener(() => ChooseBonus(2));
+
+        // Hover con barrido en los tres botones de bonos
+        AddHover(refuerzosButton);
+        AddHover(murallasButton);
+        AddHover(avituallamientoButton);
+    }
+
+    void AddHover(Button button)
+    {
+        if (button != null && button.GetComponent<ButtonHoverToggle>() == null)
+            button.gameObject.AddComponent<ButtonHoverToggle>();
     }
 
     // Muestra el panel y recibe un callback para cuando el jugador elija
