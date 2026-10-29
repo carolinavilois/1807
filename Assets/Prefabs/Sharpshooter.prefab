@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 757789342140732286}
   - component: {fileID: 3707068023732056987}
   - component: {fileID: 2577757674002551831}
+  - component: {fileID: 8039623270709520134}
+  - component: {fileID: -5938271640928374651}
   m_Layer: 0
   m_Name: Sharpshooter
   m_TagString: Untagged
@@ -83,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.25111246, g: 0.4688042, b: 0.5377358, a: 1}
+  m_Color: {r: 0.25111246, g: 0.4688042, b: 0.5377358, a: 0.3529412}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -109,3 +111,34 @@ MonoBehaviour:
   fireRate: 2
   projectilePrefab: {fileID: 1850364650732255031, guid: cf26b25623409f249a483655d5f41244, type: 3}
   maxHealth: 6
+--- !u!114 &8039623270709520134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5946226562881368135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7d15f1b1cb0724a818b50daacd8460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AllyDeathSound
+  deathClips:
+  - {fileID: 8300000, guid: 5016e902fbfa195448d2b7e95568d6be, type: 3}
+  - {fileID: 8300000, guid: 8374f25e2df05554bb9e611b54352b4c, type: 3}
+  - {fileID: 8300000, guid: 7668b1d80c93f9f4981f03f4f5778553, type: 3}
+  volume: 1
+--- !u!114 &-5938271640928374651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5946226562881368135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51fe9cfe94e0ba94688084921f9955c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AllyShootSound
+  shootClip: {fileID: 8300000, guid: 0967b5ba01b689b4d83af0ab95ca16ab, type: 3}
+  volume: 1

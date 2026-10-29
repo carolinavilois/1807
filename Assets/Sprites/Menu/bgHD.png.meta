@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0cb1a747b9bcfb143bcc40b91f32ad6c
+guid: 55edbcdf171ae7748b7fe5f7ff79248e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3511629512978174638
-    second: fondomadera_0
+      213: 4048471140183231217
+    second: bgHD_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fondomadera_0
+      name: bgHD_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1920
-        height: 1080
+        width: 1280
+        height: 720
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ea297d7cf60dbb030800000000000000
-      internalID: 3511629512978174638
+      spriteID: 1faca026d0f0f2830800000000000000
+      internalID: 4048471140183231217
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      fondomadera_0: 3511629512978174638
+      bgHD_0: 4048471140183231217
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

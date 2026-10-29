@@ -45,9 +45,9 @@ public class Cannonball : MonoBehaviour
         Destroy(gameObject);  // La bala desaparece tras explotar
     }
 
-    public void SetTarget(Transform enemyTransform)  // Asigna objetivo y calcula dirección inicial
+    public void SetTarget(Transform enemyTransform)  // Asigna objetivo y calcula dirección inicial (con predicción)
     {
         targetEnemy = enemyTransform.GetComponent<Enemy>();
-        direction = (enemyTransform.position - transform.position).normalized;
+        direction = LeadTargeting.ComputeDirection(transform.position, enemyTransform, speed);
     }
 }

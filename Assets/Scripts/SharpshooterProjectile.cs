@@ -31,6 +31,6 @@ public class SharpshooterProjectile : MonoBehaviour
     public void SetTarget(Transform enemyTransform)
     {
         targetEnemy = enemyTransform.GetComponent<Enemy>();
-        direction = (enemyTransform.position - transform.position).normalized;
+        direction = LeadTargeting.ComputeDirection(transform.position, enemyTransform, speed);
     }
 }

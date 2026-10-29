@@ -37,6 +37,18 @@ public class WaveSpawner : MonoBehaviour
     public SupplyRaidUI supplyRaidUI;
     public GameObject supplyCharacterPrefab;
     public WaypointPath[] allPaths;
+
+    // Música de fondo en loop durante las oleadas (fade in/out según estado)
+    public AudioClip backgroundMusicClip;
+    [Range(0f, 1f)] public float backgroundMusicVolume = 0.3f;
+    [Range(0f, 1f)] public float backgroundMusicInactiveVolume = 0.08f;
+    public float backgroundMusicFadeInSpeed = 1f;
+    public float backgroundMusicFadeOutSpeed = 1f;
+    public float backgroundMusicActiveCutoff = 22000f;
+    public float backgroundMusicInactiveCutoff = 400f;
+    public float backgroundMusicCutoffSpeed = 2000f;
+    AudioSource backgroundMusicSource;
+    AudioLowPassFilter backgroundMusicLowPass;
     string[] procerNames = { "Cornelio Saavedra", "Bernardo de Velasco", "César Balbiani", "Cornelio Saavedra" };
 
     // Se dispara al arrancar una oleada (normal o por el debug). Pasa el índice 0-based.
@@ -76,6 +88,21 @@ public class WaveSpawner : MonoBehaviour
             WaveConfig first = waves[0];
             procerDialog.Show(BuildProcerMessage(first), GetProcerName(0));
         }
+
+        // Música de fondo en loop (sin reiniciar; solo se ajusta el volumen)
+        if (backgroundMusicClip != null)
+        {
+            backgroundMusicSource = gameObject.AddComponent<AudioSource>();
+            backgroundMusicSource.clip = backgroundMusicClip;
+            backgroundMusicSource.loop = true;
+            backgroundMusicSource.playOnAwake = false;
+            backgroundMusicSource.spatialBlend = 0f;
+            backgroundMusicSource.volume = 0f;
+            backgroundMusicSource.Play();
+
+            backgroundMusicLowPass = gameObject.AddComponent<AudioLowPassFilter>();
+            backgroundMusicLowPass.cutoffFrequency = backgroundMusicActiveCutoff;
+        }
     }
 
     bool CanStartNextWave()
@@ -102,6 +129,21 @@ public class WaveSpawner : MonoBehaviour
             UpdateWaveHUD();
             WaveStarted?.Invoke(waveIndex);
             StartCoroutine(SpawnWave(waveIndex));
+        }
+
+        // Ajuste de la música de fondo según si hay oleada activa:
+        // volumen alto + sin filtro activo; volumen bajo + filtro pasa-bajos (efecto tubo)
+        if (backgroundMusicSource != null)
+        {
+            float targetVol = waveInProgress ? backgroundMusicVolume : backgroundMusicInactiveVolume;
+            float volSpeed = (targetVol > backgroundMusicSource.volume) ? backgroundMusicFadeInSpeed : backgroundMusicFadeOutSpeed;
+            backgroundMusicSource.volume = Mathf.MoveTowards(backgroundMusicSource.volume, targetVol, volSpeed * Time.deltaTime);
+
+            if (backgroundMusicLowPass != null)
+            {
+                float targetCutoff = waveInProgress ? backgroundMusicActiveCutoff : backgroundMusicInactiveCutoff;
+                backgroundMusicLowPass.cutoffFrequency = Mathf.MoveTowards(backgroundMusicLowPass.cutoffFrequency, targetCutoff, backgroundMusicCutoffSpeed * Time.deltaTime);
+            }
         }
     }
     IEnumerator SpawnWave(int waveIndex)
@@ -157,6 +199,9 @@ public class WaveSpawner : MonoBehaviour
             tempBonusLives = 0;
         }
 
+        // La oleada terminó: cortar la música antes del diálogo de la próxima
+        waveInProgress = false;
+
         if (currentWave >= waves.Length)
         {
             yield return new WaitForSeconds(1.5f);
@@ -180,7 +225,6 @@ public class WaveSpawner : MonoBehaviour
 
             waveText.text = "Oleada " + (currentWave + 1) + "/" + waves.Length;
         }
-        waveInProgress = false;
     }
 
     // ===== DEBUG =====

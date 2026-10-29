@@ -32,9 +32,9 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void SetTarget(Transform enemyTransform)  // Calcula direcci\u00f3n al momento de disparar
+    public void SetTarget(Transform enemyTransform)  // Calcula dirección al momento de disparar (con predicción)
     {
         targetEnemy = enemyTransform.GetComponent<Enemy>();
-        direction = (enemyTransform.position - transform.position).normalized;
+        direction = LeadTargeting.ComputeDirection(transform.position, enemyTransform, speed);
     }
 }

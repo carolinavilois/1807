@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 2990246959709342352}
   - component: {fileID: 676939192785250601}
   - component: {fileID: -7700898851260963304}
+  - component: {fileID: -8603927536655304582}
+  - component: {fileID: -4829173645019283746}
   m_Layer: 0
   m_Name: Soldier
   m_TagString: Untagged
@@ -146,3 +148,34 @@ MonoBehaviour:
   fireRate: 1.5
   projectilePrefab: {fileID: 1850364650732255031, guid: 1525569dd4ffe184d96aa1b2a5c85b7e, type: 3}
   maxHealth: 10
+--- !u!114 &-8603927536655304582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3329256568114624229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7d15f1b1cb0724a818b50daacd8460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AllyDeathSound
+  deathClips:
+  - {fileID: 8300000, guid: 5016e902fbfa195448d2b7e95568d6be, type: 3}
+  - {fileID: 8300000, guid: 8374f25e2df05554bb9e611b54352b4c, type: 3}
+  - {fileID: 8300000, guid: 7668b1d80c93f9f4981f03f4f5778553, type: 3}
+  volume: 1
+--- !u!114 &-4829173645019283746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3329256568114624229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51fe9cfe94e0ba94688084921f9955c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AllyShootSound
+  shootClip: {fileID: 8300000, guid: 26693b08f4782244295e69b0031c5b87, type: 3}
+  volume: 1

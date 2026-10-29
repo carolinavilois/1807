@@ -10,6 +10,11 @@ public class SupplyCharacter : MonoBehaviour
     WaypointPath path;                     // Camino asignado al spawnear
     int currentWaypointIndex;              // Próximo waypoint al que moverse
 
+    void Awake()
+    {
+        UnitShadow.Attach(gameObject);
+    }
+
     // Asigna un camino y arranca la animación; al llegar al final ejecuta callback
     public void SetPathAndGo(WaypointPath wpPath, System.Action callback)
     {

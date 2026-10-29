@@ -16,6 +16,7 @@ public class Soldier : MonoBehaviour
     Color originalColor;
     Image healthBarFill;
     float healthBarMaxWidth;
+    AllyShootSound shootSound;
 
     void Start()
     {
@@ -23,7 +24,9 @@ public class Soldier : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
             originalColor = spriteRenderer.color;
+        shootSound = GetComponent<AllyShootSound>();
         CreateHealthBar();
+        UnitShadow.Attach(gameObject);
     }
 
     void CreateHealthBar()
@@ -110,6 +113,7 @@ public class Soldier : MonoBehaviour
     {
         GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
         proj.GetComponent<Projectile>().SetTarget(target);
+        if (shootSound != null) shootSound.Play();
     }
 
     public void TakeDamage(int damage)
@@ -124,6 +128,9 @@ public class Soldier : MonoBehaviour
 
     IEnumerator Die()
     {
+        AllyDeathSound deathSound = GetComponent<AllyDeathSound>();
+        if (deathSound != null) deathSound.Play();
+
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.enabled = false;
         yield return new WaitForSeconds(0.15f);

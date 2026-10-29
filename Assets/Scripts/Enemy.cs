@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
             originalColor = spriteRenderer.color;
+        UnitShadow.Attach(gameObject);
     }
 
     void CreateHealthBar()

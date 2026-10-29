@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 5534422545951286953}
   - component: {fileID: 5711884342554925809}
   - component: {fileID: 5284580979369987659}
+  - component: {fileID: -2777258021575315707}
+  - component: {fileID: -7362518490273645182}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -109,3 +111,34 @@ MonoBehaviour:
   fireRate: 4
   projectilePrefab: {fileID: 2250144363349477048, guid: 5796e8c8760f8aa438176d6a3e88892f, type: 3}
   maxHealth: 7
+--- !u!114 &-2777258021575315707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4847429109016950340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7d15f1b1cb0724a818b50daacd8460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AllyDeathSound
+  deathClips:
+  - {fileID: 8300000, guid: 5016e902fbfa195448d2b7e95568d6be, type: 3}
+  - {fileID: 8300000, guid: 8374f25e2df05554bb9e611b54352b4c, type: 3}
+  - {fileID: 8300000, guid: 7668b1d80c93f9f4981f03f4f5778553, type: 3}
+  volume: 1
+--- !u!114 &-7362518490273645182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4847429109016950340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51fe9cfe94e0ba94688084921f9955c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AllyShootSound
+  shootClip: {fileID: 8300000, guid: ace4904377768284aa1153956ee7fcb8, type: 3}
+  volume: 1

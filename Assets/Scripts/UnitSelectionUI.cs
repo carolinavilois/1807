@@ -112,7 +112,11 @@ public class UnitSelectionUI : MonoBehaviour
     void DestroyUnit()
     {
         if (selectedUnit != null)
+        {
+            AllyDeathSound deathSound = selectedUnit.GetComponent<AllyDeathSound>();
+            if (deathSound != null) deathSound.Play();
             Destroy(selectedUnit);
+        }
         if (destroyPanel != null)
             destroyPanel.SetActive(false);
     }

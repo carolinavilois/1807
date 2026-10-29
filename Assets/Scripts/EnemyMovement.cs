@@ -72,6 +72,20 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    // Velocidad actual del enemigo segun el waypoint al que se dirige (para predicción de disparo)
+    public Vector2 CurrentVelocity
+    {
+        get
+        {
+            if (waypointPath == null) return Vector2.zero;
+            if (currentWaypointIndex >= waypointPath.GetPathLength()) return Vector2.zero;
+            Transform wp = waypointPath.GetWaypoint(currentWaypointIndex);
+            Vector2 dir = (Vector2)wp.position - (Vector2)transform.position;
+            if (dir.sqrMagnitude < 0.0001f) return Vector2.zero;
+            return dir.normalized * speed;
+        }
+    }
+
     // Asigna un camino al enemigo (usado por WaveSpawner al crearlo)
     public void SetPath(WaypointPath path)
     {
