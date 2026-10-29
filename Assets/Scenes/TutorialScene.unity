@@ -178,8 +178,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Comenzar
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4c55f35d4edddb64bb1cf956501bf2b8, type: 2}
+  m_sharedMaterial: {fileID: -1537961648754957737, guid: 4c55f35d4edddb64bb1cf956501bf2b8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -203,11 +203,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.8
+  m_fontSize: 26.2
   m_fontSizeBase: 32.1
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 14.9
+  m_fontSizeMin: 26.2
   m_fontSizeMax: 73.6
   m_fontStyle: 3
   m_HorizontalAlignment: 2
@@ -1010,8 +1010,8 @@ MonoBehaviour:
     cada oleada, hac\xE9 clic en los puntos de despliegue para colocar unidades.
     No dejes que los enemigos lleguen a la base."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c8ea7f62e858de14393c41302c28abf8, type: 2}
+  m_sharedMaterial: {fileID: 2776600968194854659, guid: c8ea7f62e858de14393c41302c28abf8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1035,8 +1035,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.1
-  m_fontSizeBase: 40.1
+  m_fontSize: 46.6
+  m_fontSizeBase: 46.6
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1045,9 +1045,9 @@ MonoBehaviour:
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -8.8
   m_characterHorizontalScale: 1
-  m_wordSpacing: 0
+  m_wordSpacing: 50.41
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
@@ -1100,7 +1100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b7a2f1c8d9a4e35b6c0f2e7a9d3c1b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TypewriterEffect
-  charsPerSecond: 60
+  charsPerSecond: 37
   revealObject: {fileID: 267148470}
 --- !u!1 &1835074946
 GameObject:
