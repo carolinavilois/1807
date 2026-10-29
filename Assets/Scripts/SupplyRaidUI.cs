@@ -45,6 +45,15 @@ public class SupplyRaidUI : MonoBehaviour
     }
 
     // útil para que WaveSpawner sepa si el panel esté abierto (bloquea Space)
+    // Cierra el panel sin aplicar ningun bono (usado por el debug de oleadas)
+    public void Hide()
+    {
+        waitingForChoice = false;
+        onBonusSelected = null;
+        if (supplyPanel != null)
+            supplyPanel.SetActive(false);
+    }
+
     public bool IsOpen()
     {
         return supplyPanel != null && supplyPanel.activeSelf;

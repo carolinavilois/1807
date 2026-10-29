@@ -2,10 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Unidad defensiva de largo alcance: costo medio (40P), rango alto (7), disparo lento (2s), vida 3
+// Unidad defensiva de largo alcance: costo medio (40P), rango alto (8), disparo lento (2s), vida 3
 public class Sharpshooter : MonoBehaviour
 {
-    public float range = 7f;
+    public float range = 8f;
     public float fireRate = 2f;
     public GameObject projectilePrefab;
     public int maxHealth = 6;

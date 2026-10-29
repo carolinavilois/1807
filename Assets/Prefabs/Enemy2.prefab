@@ -128,6 +128,7 @@ MonoBehaviour:
   patriotismReward: 10
   enemyTypeIndex: 0
   meleeDamage: 1
+  livesCost: 1
   isDead: 0
 --- !u!95 &-1495250448029435297
 Animator:

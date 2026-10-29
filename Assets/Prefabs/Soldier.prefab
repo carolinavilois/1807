@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d1d625dc4f724458572a8a0549a59d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Soldier
-  range: 2
+  range: 3
   fireRate: 1.5
   projectilePrefab: {fileID: 1850364650732255031, guid: 1525569dd4ffe184d96aa1b2a5c85b7e, type: 3}
   maxHealth: 10

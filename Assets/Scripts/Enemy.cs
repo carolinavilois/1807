@@ -6,8 +6,9 @@ public class Enemy : MonoBehaviour
 {
     public int maxHealth = 1;           // Vida máxima del enemigo (se configura desde el prefab en Unity)
     public int patriotismReward = 5;    // Patriotismo que da al morir
-    public int enemyTypeIndex;          // 0=E1 (rojo), 1=E2 (rojo oscuro), 2=E3 (rojo casi negro)
+    public int enemyTypeIndex;          // 0=E1 (rojo), 1=E2 (rojo oscuro), 2=E3 (rojo casi negro), 3=Boss final
     public int meleeDamage = 1;         // Daño que hace al atacar en melee
+    public int livesCost = 1;           // Vidas que quita al llegar a la base (boss = 2)
 
     int currentHealth;                  // Vida actual (se inicializa en Start)
     Image healthBarFill;                // Referencia al fill de la barra de vida (verde/amarillo/rojo)

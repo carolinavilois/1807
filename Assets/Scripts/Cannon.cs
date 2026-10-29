@@ -5,7 +5,7 @@ using UnityEngine.UI;
 // Unidad defensiva pesada: alto costo (60P), da�o de �rea con Cannonball, disparo muy lento (4s), vida 8
 public class Cannon : MonoBehaviour
 {
-    public float range = 5f;
+    public float range = 7f;
     public float fireRate = 4f;
     public GameObject projectilePrefab;
     public int maxHealth = 16;

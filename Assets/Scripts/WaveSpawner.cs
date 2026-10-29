@@ -24,6 +24,7 @@ public class WaveSpawner : MonoBehaviour
     public GameObject enemy1Prefab;
     public GameObject enemy2Prefab;
     public GameObject enemy3Prefab;
+    public GameObject enemy4Prefab;
     public WaypointPath pathA;
     public WaypointPath pathB;
     public WaypointPath pathC;
@@ -38,9 +39,14 @@ public class WaveSpawner : MonoBehaviour
     public WaypointPath[] allPaths;
     string[] procerNames = { "Cornelio Saavedra", "Bernardo de Velasco", "César Balbiani", "Cornelio Saavedra" };
 
+    // Se dispara al arrancar una oleada (normal o por el debug). Pasa el índice 0-based.
+    public event System.Action<int> WaveStarted;
+
+    public int WaveCount => waves.Length;
+
     int currentWave = 0;         // índice de la oleada actual
     int enemiesAlive = 0;        // Enemigos que siguen vivos en esta oleada
-    int[] enemiesByType = new int[3];  // 0=E1, 1=E2, 2=E3
+    int[] enemiesByType = new int[4];  // 0=E1, 1=E2, 2=E3, 3=Boss
     int currentLives;            // Vidas restantes del jugador
 
     // Bonos de Cabalgatas de Abastecimiento (duran una oleada)
@@ -61,10 +67,10 @@ public class WaveSpawner : MonoBehaviour
 
     void Start()
     {
-        waveText.text = "Oleada 1/10";
+        waveText.text = "Oleada 1/" + waves.Length;
         currentLives = maxLives;
         livesText.text = "Vidas: " + currentLives;
-
+// Llama al procerdialog script si está el objeto del menú de dialogos activo, si llamo al procer dialog se va actualizar y cambiar
         if (procerDialog != null)
         {
             WaveConfig first = waves[0];
@@ -94,13 +100,14 @@ public class WaveSpawner : MonoBehaviour
             int waveIndex = currentWave++;
             waveInProgress = true;
             UpdateWaveHUD();
+            WaveStarted?.Invoke(waveIndex);
             StartCoroutine(SpawnWave(waveIndex));
         }
     }
     IEnumerator SpawnWave(int waveIndex)
     {
         WaveConfig config = waves[waveIndex];
-        waveText.text = "Oleada " + (waveIndex + 1) + "/10";
+        waveText.text = "Oleada " + (waveIndex + 1) + "/" + waves.Length;
         System.Array.Clear(enemiesByType, 0, enemiesByType.Length);
 
         // Spawnea enemigos por Path A
@@ -122,6 +129,13 @@ public class WaveSpawner : MonoBehaviour
         {
             SpawnEnemy(pathC, config);
             yield return new WaitForSeconds(config.spawnDelay);
+        }
+
+        // Boss final: aparece una sola vez, al final de la ultima oleada
+        if (waveIndex == waves.Length - 1 && enemy4Prefab != null)
+        {
+            yield return new WaitForSeconds(config.spawnDelay);
+            SpawnEnemy(pathA, config, enemy4Prefab);
         }
 
         // Marca los caminos que ya aparecieron (para dificultad progresiva)
@@ -164,9 +178,57 @@ public class WaveSpawner : MonoBehaviour
                 yield return StartCoroutine(RunSupplyRaid());
             }
 
-            waveText.text = "Oleada " + (currentWave + 1) + "/10";
+            waveText.text = "Oleada " + (currentWave + 1) + "/" + waves.Length;
         }
         waveInProgress = false;
+    }
+
+    // ===== DEBUG =====
+    // Salta directo a la oleada indicada (0-based). Corta la oleada actual,
+    // limpia enemigos y paneles, y arranca la elegida sin dialogo previo.
+    public void DebugStartWave(int waveIndex)
+    {
+        if (waveIndex < 0 || waveIndex >= waves.Length) return;
+
+        // Bloquea el inicio por Espacio mientras se hace el cambio
+        waveInProgress = true;
+        StopAllCoroutines();
+        supplyRaidActive = false;
+
+        // Cierra paneles que bloquean el inicio de oleada
+        if (procerDialog != null) procerDialog.Hide();
+        if (supplyRaidUI != null) supplyRaidUI.Hide();
+
+        // Limpia enemigos y cabalgatas en curso
+        foreach (Enemy enemy in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
+        {
+            enemy.gameObject.SetActive(false);
+            Destroy(enemy.gameObject);
+        }
+        foreach (SupplyCharacter character in FindObjectsByType<SupplyCharacter>(FindObjectsSortMode.None))
+            Destroy(character.gameObject);
+
+        enemiesAlive = 0;
+        System.Array.Clear(enemiesByType, 0, enemiesByType.Length);
+
+        // La oleada de debug se comporta como una partida avanzada:
+        // todos los caminos ya usados, sin previews de E2/E3.
+        pathAWasUsed = pathBWasUsed = pathCWasUsed = true;
+        pathAPreviewUsed = pathBPreviewUsed = pathCPreviewUsed = true;
+
+        StartCoroutine(DebugStartWaveRoutine(waveIndex));
+    }
+
+    IEnumerator DebugStartWaveRoutine(int waveIndex)
+    {
+        // Deja que los Destroy se apliquen antes de arrancar la oleada nueva
+        yield return null;
+
+        currentWave = waveIndex + 1;
+        waveText.text = "Oleada " + (waveIndex + 1) + "/" + waves.Length;
+        UpdateWaveHUD();
+        WaveStarted?.Invoke(waveIndex);
+        StartCoroutine(SpawnWave(waveIndex));
     }
 
     IEnumerator RunSupplyRaid()
@@ -242,13 +304,14 @@ public class WaveSpawner : MonoBehaviour
     }
 
     // Crea un enemigo en el camino indicado, con reruteo si es E2/E3 en camino nuevo
-    void SpawnEnemy(WaypointPath path, WaveConfig config)
+    // forcedPrefab: si se indica, se usa ese prefab (ej. el boss) y se saltea el reruteo
+    void SpawnEnemy(WaypointPath path, WaveConfig config, GameObject forcedPrefab = null)
     {
         if (path == null) return;
-        GameObject prefab = ChooseEnemyType(config, path);
+        GameObject prefab = forcedPrefab != null ? forcedPrefab : ChooseEnemyType(config, path);
         if (prefab == null) return;
 
-        bool isTier2Plus = (prefab == enemy2Prefab || prefab == enemy3Prefab);
+        bool isTier2Plus = forcedPrefab == null && (prefab == enemy2Prefab || prefab == enemy3Prefab);
         bool isNewPath = (path == pathA && !pathAWasUsed) || (path == pathB && !pathBWasUsed) || (path == pathC && !pathCWasUsed);
 
         if (isTier2Plus && isNewPath)
@@ -278,19 +341,19 @@ public class WaveSpawner : MonoBehaviour
 
         GameObject enemy = Instantiate(prefab, path.GetWaypoint(0).position, Quaternion.identity);
         Enemy enemyScript = enemy.GetComponent<Enemy>();
-        enemyScript.enemyTypeIndex = prefab == enemy2Prefab ? 1 : prefab == enemy3Prefab ? 2 : 0;
+        enemyScript.enemyTypeIndex = prefab == enemy2Prefab ? 1 : prefab == enemy3Prefab ? 2 : prefab == enemy4Prefab ? 3 : 0;
         enemiesByType[enemyScript.enemyTypeIndex]++;
         enemy.GetComponent<EnemyMovement>().SetPath(path);
         enemiesAlive++;
         UpdateWaveHUD();
     }
 
-    // Cuando un enemigo llega a la base: resta vida y verifica Game Over
-    public void EnemyReachedBase(int typeIndex)
+    // Cuando un enemigo llega a la base: resta vidas y verifica Game Over
+    public void EnemyReachedBase(int typeIndex, int livesCost = 1)
     {
         enemiesAlive--;
         enemiesByType[typeIndex]--;
-        currentLives--;
+        currentLives -= Mathf.Max(1, livesCost);
         livesText.text = "Vidas: " + currentLives;
         UpdateWaveHUD();
         if (currentLives <= 0)

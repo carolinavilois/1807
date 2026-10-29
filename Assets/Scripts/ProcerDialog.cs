@@ -41,7 +41,7 @@ public class ProcerDialog : MonoBehaviour
         }
     }
 
-    void Hide()
+    public void Hide()
     {
         if (dialogPanel != null)
             dialogPanel.SetActive(false);

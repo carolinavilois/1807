@@ -2,10 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Unidad defensiva b�sica: bajo costo (20P), rango medio (4), velocidad de disparo normal (1.5s), vida 5
+// Unidad defensiva b�sica: bajo costo (20P), rango medio (3), velocidad de disparo normal (1.5s), vida 5
 public class Soldier : MonoBehaviour
 {
-    public float range = 4f;
+    public float range = 3f;
     public float fireRate = 1.5f;
     public GameObject projectilePrefab;
     public int maxHealth = 10;

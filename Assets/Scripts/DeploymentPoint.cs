@@ -8,6 +8,19 @@ using System.Collections.Generic;
 public class DeploymentPoint : MonoBehaviour
 {
     readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
+    readonly Collider2D[] occupancyHits = new Collider2D[8];
+
+    public float occupancyRadius = 0.3f;
+    public float occupancyCheckInterval = 0.1f;
+
+    SpriteRenderer marker;
+    GameObject occupant;
+    float nextOccupancyCheck;
+
+    void Awake()
+    {
+        marker = GetComponent<SpriteRenderer>();
+    }
 
     bool IsPointerOverUI()
     {
@@ -30,6 +43,8 @@ public class DeploymentPoint : MonoBehaviour
     }
     void Update()
     {
+        UpdateMarkerVisibility();
+
         // Solo reacciona al click izquierdo del mouse
         if (Input.GetMouseButtonDown(0))
         {
@@ -47,5 +62,51 @@ public class DeploymentPoint : MonoBehaviour
                 FindAnyObjectByType<UnitSelectionUI>().Show(transform);
             }
         }
+    }
+
+    void UpdateMarkerVisibility()
+    {
+        if (marker == null) return;
+
+        // Mientras la unidad exista, el punto queda oculto aunque su collider
+        // se desactive durante la animacion de muerte.
+        if (occupant != null)
+        {
+            if (marker.enabled) marker.enabled = false;
+            return;
+        }
+
+        if (Time.time < nextOccupancyCheck) return;
+        nextOccupancyCheck = Time.time + Mathf.Max(0.02f, occupancyCheckInterval);
+
+        occupant = FindAlliedUnit();
+        marker.enabled = occupant == null;
+    }
+
+    GameObject FindAlliedUnit()
+    {
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = true;
+        filter.useLayerMask = false;
+        filter.useDepth = false;
+        filter.useNormalAngle = false;
+
+        int count = Physics2D.OverlapCircle(transform.position, occupancyRadius, filter, occupancyHits);
+        for (int i = 0; i < count; i++)
+        {
+            Collider2D hit = occupancyHits[i];
+            if (hit == null) continue;
+
+            Soldier soldier = hit.GetComponentInParent<Soldier>();
+            if (soldier != null) return soldier.gameObject;
+
+            Sharpshooter sharpshooter = hit.GetComponentInParent<Sharpshooter>();
+            if (sharpshooter != null) return sharpshooter.gameObject;
+
+            Cannon cannon = hit.GetComponentInParent<Cannon>();
+            if (cannon != null) return cannon.gameObject;
+        }
+
+        return null;
     }
 }
