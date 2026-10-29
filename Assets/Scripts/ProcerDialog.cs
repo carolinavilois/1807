@@ -1,4 +1,7 @@
+using System.Collections;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +13,10 @@ public class ProcerDialog : MonoBehaviour
     public TMP_Text nameText;
     public Button entendidoButton;
     public Sprite[] procerPortraits;
+    [Range(10f, 300f)] public float charsPerSecond = 60f;
+
     string[] procerNamesRef = { "Cornelio Saavedra", "Bernardo de Velasco", "César Balbiani", "Cornelio Saavedra" };
+    Coroutine typingRoutine;
 
     void Start()
     {
@@ -23,7 +29,13 @@ public class ProcerDialog : MonoBehaviour
         if (dialogPanel != null)
             dialogPanel.SetActive(true);
         if (dialogText != null)
+        {
             dialogText.text = message;
+            dialogText.ForceMeshUpdate();
+            dialogText.maxVisibleCharacters = 0;
+            if (typingRoutine != null) StopCoroutine(typingRoutine);
+            typingRoutine = StartCoroutine(ShowTypewriter());
+        }
         if (nameText != null)
             nameText.text = name;
         if (portraitImage != null)
@@ -39,6 +51,24 @@ public class ProcerDialog : MonoBehaviour
                 portraitImage.enabled = false;
             }
         }
+    }
+
+    IEnumerator ShowTypewriter()
+    {
+        float shown = 0f;
+        int total = 0;
+        if (dialogText != null && dialogText.textInfo != null)
+            total = dialogText.textInfo.characterCount;
+
+        while (shown < total)
+        {
+            shown = Mathf.Min(shown + charsPerSecond * Time.deltaTime, total);
+            int count = Mathf.FloorToInt(shown);
+            if (count != dialogText.maxVisibleCharacters)
+                dialogText.maxVisibleCharacters = count;
+            yield return null;
+        }
+        dialogText.maxVisibleCharacters = total;
     }
 
     public void Hide()
