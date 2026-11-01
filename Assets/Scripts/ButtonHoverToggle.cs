@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 // Muestra la imagen de hover con un barrido lineal de izquierda a derecha.
-public class ButtonHoverToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ButtonHoverToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public GameObject hoverImage;
     public float sweepDuration = 0.15f;
@@ -67,6 +67,7 @@ public class ButtonHoverToggle : MonoBehaviour, IPointerEnterHandler, IPointerEx
             rt.sizeDelta = create.sprite != null ? create.sprite.rect.size : new Vector2(buttonRect.rect.width, 12f);
 
             hoverImage = go;
+            go.transform.SetAsFirstSibling();
         }
     }
 
@@ -98,6 +99,11 @@ public class ButtonHoverToggle : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         StartSweep(0f);
         if (textTransform != null) StartCoroutine(AnimateTextScale(textOriginalScale));
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        StartCoroutine(PunchScale());
     }
 
     void StartSweep(float target)
@@ -133,5 +139,26 @@ public class ButtonHoverToggle : MonoBehaviour, IPointerEnterHandler, IPointerEx
             yield return null;
         }
         textTransform.localScale = target;
+    }
+
+    IEnumerator PunchScale()
+    {
+        Vector3 original = buttonRect.localScale;
+        Vector3 pressed = original * 0.92f;
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.06f;
+            buttonRect.localScale = Vector3.Lerp(original, pressed, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.06f;
+            buttonRect.localScale = Vector3.Lerp(pressed, original, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+        buttonRect.localScale = original;
     }
 }
