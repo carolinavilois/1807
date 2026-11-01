@@ -68,6 +68,7 @@ public class WaveSpawner : MonoBehaviour
     bool supplyRaidActive = false;
     bool waveInProgress;
     bool wasReadyToStart;
+    bool musicMuffled;
 
     // Control de caminos usados y preview de tier 2+ en camino nuevo (solo 1 E2/E3 por camino nuevo)
     bool pathAWasUsed = false;
@@ -135,16 +136,33 @@ public class WaveSpawner : MonoBehaviour
         // volumen alto + sin filtro activo; volumen bajo + filtro pasa-bajos (efecto tubo)
         if (backgroundMusicSource != null)
         {
-            float targetVol = waveInProgress ? backgroundMusicVolume : backgroundMusicInactiveVolume;
+            float targetVol, targetCutoff;
+            if (musicMuffled)
+            {
+                // Menú de pausa abierto: sonido enlatado y volumen bajo
+                targetVol = backgroundMusicInactiveVolume;
+                targetCutoff = backgroundMusicInactiveCutoff;
+            }
+            else
+            {
+                targetVol = waveInProgress ? backgroundMusicVolume : backgroundMusicInactiveVolume;
+                targetCutoff = waveInProgress ? backgroundMusicActiveCutoff : backgroundMusicInactiveCutoff;
+            }
+
             float volSpeed = (targetVol > backgroundMusicSource.volume) ? backgroundMusicFadeInSpeed : backgroundMusicFadeOutSpeed;
-            backgroundMusicSource.volume = Mathf.MoveTowards(backgroundMusicSource.volume, targetVol, volSpeed * Time.deltaTime);
+            backgroundMusicSource.volume = Mathf.MoveTowards(backgroundMusicSource.volume, targetVol, volSpeed * Time.unscaledDeltaTime);
 
             if (backgroundMusicLowPass != null)
             {
-                float targetCutoff = waveInProgress ? backgroundMusicActiveCutoff : backgroundMusicInactiveCutoff;
-                backgroundMusicLowPass.cutoffFrequency = Mathf.MoveTowards(backgroundMusicLowPass.cutoffFrequency, targetCutoff, backgroundMusicCutoffSpeed * Time.deltaTime);
+                backgroundMusicLowPass.cutoffFrequency = Mathf.MoveTowards(backgroundMusicLowPass.cutoffFrequency, targetCutoff, backgroundMusicCutoffSpeed * Time.unscaledDeltaTime);
             }
         }
+    }
+
+    // Menú de pausa: fuerza el sonido enlatado mientras esté abierto
+    public void SetMusicMuffled(bool muffled)
+    {
+        musicMuffled = muffled;
     }
     IEnumerator SpawnWave(int waveIndex)
     {

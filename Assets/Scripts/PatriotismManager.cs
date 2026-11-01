@@ -42,9 +42,9 @@ public class PatriotismManager : MonoBehaviour
 
     void AddPassiveIncome()
     {
-        // Solo da patriotismo pasivo si hay una oleada activa (enemigos vivos)
+        // Solo da patriotismo pasivo si hay una oleada activa (enemigos vivos) y el juego no está pausado
         WaveSpawner ws = FindAnyObjectByType<WaveSpawner>();
-        if (ws != null && ws.HasActiveEnemies())
+        if (ws != null && ws.HasActiveEnemies() && Time.timeScale > 0f)
         {
             currentPatriotism += passiveIncome;
             UpdateUI();
